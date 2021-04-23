@@ -31,7 +31,7 @@ public class EmployeeController {
     }
 
     //get all users
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getAllUsers(){
         try {
             List<User> users = service.getAllUsers();
@@ -54,7 +54,7 @@ public class EmployeeController {
     }
 
     // update a user
-    @RequestMapping(value = "{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "{id}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> updateUser(@RequestBody User user) {
         try {
             service.updateUser(user);
