@@ -1,11 +1,16 @@
 package com.group1.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import javax.persistence.*;
+import java.util.Collection;
+import java.util.Collections;
+
 
 @Entity
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue
     private long id;
@@ -13,16 +18,28 @@ public class User {
     private String password;
     private long dayLimit;
     private long transactionLimit;
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
+    private Boolean locked = false;
+    private Boolean enabled = true;
 
-    public User(long id, String username, String password, long dayLimit, long transactionLimit) {
-        this.id = id;
+    public User(String username, String password, long dayLimit, long transactionLimit, UserRole userRole) {
         this.username = username;
         this.password = password;
         this.dayLimit = dayLimit;
         this.transactionLimit = transactionLimit;
+        this.userRole = userRole;
     }
 
     public User() {
+    }
+
+    public UserRole getUserType() {
+        return userRole;
+    }
+
+    public void setUserType(UserRole userRole) {
+        this.userRole = userRole;
     }
 
     public long getId() {
@@ -33,6 +50,7 @@ public class User {
         this.id = id;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
@@ -41,6 +59,7 @@ public class User {
         this.username = username;
     }
 
+    @Override
     public String getPassword() {
         return password;
     }
@@ -63,5 +82,39 @@ public class User {
 
     public void setTransactionLimit(long transactionLimit) {
         this.transactionLimit = transactionLimit;
+    }
+
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return !locked;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(userRole.name());
+        return Collections.singletonList(authority);
     }
 }
