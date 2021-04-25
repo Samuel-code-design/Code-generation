@@ -14,8 +14,7 @@ public class User {
     private long dayLimit;
     private long transactionLimit;
 
-    public User(long id, String username, String password, long dayLimit, long transactionLimit) {
-        this.id = id;
+    public User(String username, String password, long dayLimit, long transactionLimit) {
         this.username = username;
         this.password = password;
         this.dayLimit = dayLimit;

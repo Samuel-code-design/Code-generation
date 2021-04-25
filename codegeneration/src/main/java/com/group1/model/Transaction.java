@@ -21,8 +21,7 @@ public class Transaction {
     @ManyToOne
     private User preformingUser;
 
-    public Transaction(long id, double amount, LocalDateTime timestamp, Account accountFrom, Account accountTo, User preformingUser) {
-        this.id = id;
+    public Transaction(double amount, LocalDateTime timestamp, Account accountFrom, Account accountTo, User preformingUser) {
         this.amount = amount;
         this.timestamp = timestamp;
         this.accountFrom = accountFrom;

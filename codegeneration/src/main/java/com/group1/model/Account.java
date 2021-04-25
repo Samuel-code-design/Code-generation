@@ -18,8 +18,7 @@ public class Account {
     @ManyToOne
     private User user;
 
-    public Account(long id, String iban, AccountType type, double balance, double absoluteLimit, User user) {
-        this.id = id;
+    public Account(String iban, AccountType type, double balance, double absoluteLimit, User user) {
         this.iban = iban;
         this.type = type;
         this.balance = balance;
