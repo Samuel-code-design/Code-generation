@@ -37,8 +37,8 @@ public class UserService implements UserDetailsService {
 
         //TODO: daylimit and transcation limit
 
-        user.setUserRole(UserRole.valueOf("CUSTOMER"));
+        user.setUserRole(UserRole.ROLE_CUSTOMER);
         userRepository.save(user);
-        return "it works";
+        return "Account is created";
     }
 }
