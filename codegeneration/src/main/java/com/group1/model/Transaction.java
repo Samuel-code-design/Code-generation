@@ -19,14 +19,14 @@ public class Transaction {
     @ManyToOne
     private Account accountTo;
     @ManyToOne
-    private User preformingUser;
+    private User performingUser;
 
-    public Transaction(double amount, LocalDateTime timestamp, Account accountFrom, Account accountTo, User preformingUser) {
+    public Transaction(double amount, LocalDateTime timestamp, Account accountFrom, Account accountTo, User performingUser) {
         this.amount = amount;
         this.timestamp = timestamp;
         this.accountFrom = accountFrom;
         this.accountTo = accountTo;
-        this.preformingUser = preformingUser;
+        this.performingUser = performingUser;
     }
 
     public Transaction() {
@@ -72,11 +72,11 @@ public class Transaction {
         this.accountTo = accountTo;
     }
 
-    public User getPreformingUser() {
-        return preformingUser;
+    public User getPerformingUser() {
+        return performingUser;
     }
 
-    public void setPreformingUser(User preformingUser) {
-        this.preformingUser = preformingUser;
+    public void setPerformingUser(User performingUser) {
+        this.performingUser = performingUser;
     }
 }
