@@ -9,14 +9,14 @@ import javax.persistence.ManyToOne;
 public class Account {
     @Id
     @GeneratedValue
-    private long id;
+    private long id; //zou ook iban kunnen zijn
     private String iban; //the format: NLxxINHO0xxxxxxxxx
     private AccountType type;
     private double balance;
     private double absoluteLimit;
 
     @ManyToOne
-    private User user;
+    private User user; //var naam veranderen
 
     public Account(long id, String iban, AccountType type, double balance, double absoluteLimit, User user) {
         this.id = id;

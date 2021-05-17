@@ -11,8 +11,8 @@ public class User {
     private long id;
     private String username;
     private String password;
-    private long dayLimit;
-    private long transactionLimit;
+    private long dayLimit; // var type nakijken
+    private long transactionLimit; // var type nakijken
 
     public User(long id, String username, String password, long dayLimit, long transactionLimit) {
         this.id = id;
