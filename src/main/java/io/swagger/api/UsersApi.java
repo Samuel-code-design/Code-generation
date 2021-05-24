@@ -17,7 +17,9 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Repository;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,22 +38,8 @@ import java.util.Map;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-05-17T12:11:50.256Z[GMT]")
 @Validated
-public interface UsersApi {
-
-    @Operation(summary = "create a new user", description = "Lets an employee register a new user", security = {
-        @SecurityRequirement(name = "bearerAuth")    }, tags={ "Employee" })
-    @ApiResponses(value = { 
-        @ApiResponse(responseCode = "200", description = "the User"),
-        
-        @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content(schema = @Schema(implementation = InlineResponse400.class))),
-        
-        @ApiResponse(responseCode = "401", description = "Authorization failed") })
-    @RequestMapping(value = "/users",
-        produces = { "application/json" }, 
-        consumes = { "application/json" }, 
-        method = RequestMethod.POST)
-    ResponseEntity<Void> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "withdraw", required=true, schema=@Schema()) @Valid @RequestBody NewUser body);
-
+@Repository
+public interface UsersApi extends JpaRepository<User, Long>{
 
     @Operation(summary = "lock user by email", description = "Lets an employee lock a user by an email", security = {
         @SecurityRequirement(name = "bearerAuth")    }, tags={ "Employee" })
@@ -97,7 +85,7 @@ public interface UsersApi {
         produces = { "application/json" }, 
         consumes = { "application/json" }, 
         method = RequestMethod.PUT)
-    ResponseEntity<Void> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody List<User> body);
+    ResponseEntity<Void> updateUsers(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody List<User> body);
 
 
     @Operation(summary = "get all the users", description = "Returns a list of Users.", security = {
@@ -127,7 +115,7 @@ public interface UsersApi {
     @RequestMapping(value = "/users/{email}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<User>> userByEmail(@Parameter(in = ParameterIn.PATH, description = "the userEmail", required=true, schema=@Schema()) @PathVariable("email") String email);
+    ResponseEntity<User> userByEmail(@Parameter(in = ParameterIn.PATH, description = "the userEmail", required=true, schema=@Schema()) @PathVariable("email") String email);
 
 
     @Operation(summary = "get a user by it's id", description = "Returns a list of Users.", security = {
@@ -143,7 +131,7 @@ public interface UsersApi {
     @RequestMapping(value = "/users/{id}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<User>> userById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Integer id);
+    ResponseEntity<List<User>> userById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Long id);
 
 }
 
