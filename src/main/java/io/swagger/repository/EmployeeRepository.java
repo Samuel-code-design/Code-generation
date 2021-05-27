@@ -26,7 +26,12 @@ public interface EmployeeRepository extends CrudRepository<User, Integer> {
 
     List<User> findAllUsers();
 
-    @Query("")
+//    @Query("select u.id, u.locked, u.role, u.username, " +
+//            "u.firstName, u.lastName, u.email, u.password, " +
+//            "u.dayLimit, u.transactionLimit, u.phone " +
+//            "from User as u where u.email = :email")
+//    User findUserByEmail(@PathVariable("email") String email);
+
     User findUserByEmail(String email);
 
     User findUserById(Integer id);
