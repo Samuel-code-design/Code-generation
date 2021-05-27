@@ -22,39 +22,34 @@ public class EmployeeService {
     }
 
     public void createUser(NewUser u){
-//        newUserApiRepository.createUser(u);
+        newUserApiRepository.save(u);
     }
 
     public void lockUserByEmail(String email) {
-//        repository.lockUserByEmail(email);
+        repository.lockUserByEmail(email);
     }
 
     public void lockUserById( Integer id) {
-//        repository.lockUserById(id);
+        repository.lockUserById(id);
     }
 
-    public void updateUsers( List<User> body) {
-//        repository.updateUsers(body);
+    public void updateUser(User body) {
+        repository.save(body);
     }
 
-    public ResponseEntity<List<User>> getUsers(String searchString) {
+    public List<User> getUsers(String searchString) {
         if (searchString != null){
-//            return repository.getAllByEmailContainingOrFirstNameContainingOrLastNameContaining(searchString);
+            return repository.findAllByEmailContaining(searchString);
         }
-//        return repository.findAllUsers();
-        return null;
+        return repository.findAllUsers();
     }
 
-    public ResponseEntity<User> userByEmail(String email) {
-//        return  repository.findUsersByEmail(email);
-        return null;
-
+    public User userByEmail(String email) {
+        return  repository.findUserByEmail(email);
     }
 
-    public ResponseEntity<User> userById(Integer id) {
-//        return repository.getUserById(id);
-        return null;
-
+    public User userById(Integer id) {
+        return repository.findUserById(id);
     }
 
 }
