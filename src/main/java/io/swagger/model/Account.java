@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import org.springframework.validation.annotation.Validated;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
@@ -16,9 +19,10 @@ import javax.validation.constraints.*;
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-05-17T12:11:50.256Z[GMT]")
 
-
+@Entity
 public class Account   {
   @JsonProperty("iban")
+  @Id
   private String iban = null;
 
   /**
@@ -55,7 +59,7 @@ public class Account   {
   private TypeEnum type = null;
 
   @JsonProperty("balance")
-  private BigDecimal balance = null;
+  private Double balance = null;
 
   @JsonProperty("absoluteLimit")
   private BigDecimal absoluteLimit = null;
@@ -103,7 +107,7 @@ public class Account   {
     this.type = type;
   }
 
-  public Account balance(BigDecimal balance) {
+  public Account balance(Double balance) {
     this.balance = balance;
     return this;
   }
@@ -116,11 +120,11 @@ public class Account   {
       @NotNull
 
     @Valid
-    public BigDecimal getBalance() {
+    public Double getBalance() {
     return balance;
   }
 
-  public void setBalance(BigDecimal balance) {
+  public void setBalance(Double balance) {
     this.balance = balance;
   }
 

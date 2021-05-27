@@ -79,7 +79,7 @@ public interface AccountsApi {
     @RequestMapping(value = "/accounts/{iban}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<Account>> findAccountsByIban(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("iban") Integer iban);
+    ResponseEntity<List<Account>> findAccountsByIban(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("iban") String iban);
 
 
     @Operation(summary = "Finds accounts by User Id", description = "", security = {
@@ -95,7 +95,7 @@ public interface AccountsApi {
     @RequestMapping(value = "/accounts/{userId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<Account>> findAccountsByUserId(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("userId") Integer userId);
+    ResponseEntity<List<Account>> findAccountsByUserId(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("userId") long userId);
 
 
     @Operation(summary = "Lock account by iban", description = "", security = {
