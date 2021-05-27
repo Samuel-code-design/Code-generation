@@ -23,7 +23,7 @@ import javax.validation.Valid;
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-05-17T12:11:50.256Z[GMT]")
 @Validated
 @Repository
-public interface NewUserApi extends JpaRepository<NewUser, Long> {
+public interface NewUserApi extends JpaRepository<NewUser, Integer> {
 
     @Operation(summary = "create a new user", description = "Lets an employee register a new user", security = {
             @SecurityRequirement(name = "bearerAuth")    }, tags={ "Employee" })
@@ -38,5 +38,4 @@ public interface NewUserApi extends JpaRepository<NewUser, Long> {
             consumes = { "application/json" },
             method = RequestMethod.POST)
     ResponseEntity<Void> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "withdraw", required=true, schema=@Schema()) @Valid @RequestBody NewUser body);
-
 }

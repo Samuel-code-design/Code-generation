@@ -20,8 +20,10 @@ import javax.validation.constraints.*;
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-05-17T12:11:50.256Z[GMT]")
 
+@Entity
 public class User extends NewUser  {
 
+  @Id
   @JsonProperty("id")
   private Integer id = null;
 

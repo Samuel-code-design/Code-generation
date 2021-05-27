@@ -6,7 +6,6 @@
 package io.swagger.api;
 
 import io.swagger.model.InlineResponse400;
-import io.swagger.model.NewUser;
 import io.swagger.model.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -18,28 +17,24 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.bind.annotation.CookieValue;
-
 import javax.validation.Valid;
-import javax.validation.constraints.*;
 import java.util.List;
-import java.util.Map;
+
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-05-17T12:11:50.256Z[GMT]")
 @Validated
 @Repository
-public interface UsersApi extends JpaRepository<User, Long>{
+public interface UsersApi extends JpaRepository<User, Integer>{
 
     @Operation(summary = "lock user by email", description = "Lets an employee lock a user by an email", security = {
         @SecurityRequirement(name = "bearerAuth")    }, tags={ "Employee" })
@@ -54,6 +49,8 @@ public interface UsersApi extends JpaRepository<User, Long>{
     @RequestMapping(value = "/users/{email}",
         produces = { "application/json" }, 
         method = RequestMethod.PUT)
+    @Modifying
+    @Query("update User as u set u.locked = true where u.email like :email")
     ResponseEntity<Void> lockUserByEmail(@Parameter(in = ParameterIn.PATH, description = "the email", required=true, schema=@Schema()) @PathVariable("email") String email);
 
 
@@ -70,6 +67,8 @@ public interface UsersApi extends JpaRepository<User, Long>{
     @RequestMapping(value = "/users/{id}",
         produces = { "application/json" }, 
         method = RequestMethod.PUT)
+    @Modifying
+    @Query("update User as u set u.locked = true where u.id = :id")
     ResponseEntity<Void> lockUserById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Integer id);
 
 
@@ -90,48 +89,72 @@ public interface UsersApi extends JpaRepository<User, Long>{
 
     @Operation(summary = "get all the users", description = "Returns a list of Users.", security = {
         @SecurityRequirement(name = "bearerAuth")    }, tags={ "Employee" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "the Users", content = @Content(array = @ArraySchema(schema = @Schema(implementation = User.class)))),
-        
+
         @ApiResponse(responseCode = "400", description = "bad input parameter"),
-        
+
         @ApiResponse(responseCode = "401", description = "Authorization failed") })
     @RequestMapping(value = "/users",
-        produces = { "application/json" }, 
+        produces = { "application/json" },
         method = RequestMethod.GET)
-    ResponseEntity<List<User>> user(@Parameter(in = ParameterIn.QUERY, description = "Search a user by a string" ,schema=@Schema()) @Valid @RequestParam(value = "searchstring", required = false) String searchstring);
+    ResponseEntity<List<User>> getAllByEmailContainingOrFirstNameContainingOrLastNameContaining(@Parameter(in = ParameterIn.QUERY, description = "Search a user by a string" ,schema=@Schema()) @Valid @RequestParam(value = "searchstring", required = false) String searchstring);
+
+
+    @Operation(summary = "get all the users", description = "Returns a list of Users.", security = {
+            @SecurityRequirement(name = "bearerAuth")    }, tags={ "Employee" })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "the Users", content = @Content(array = @ArraySchema(schema = @Schema(implementation = User.class)))),
+
+            @ApiResponse(responseCode = "400", description = "bad input parameter"),
+
+            @ApiResponse(responseCode = "401", description = "Authorization failed") })
+    @RequestMapping(value = "/users",
+            produces = { "application/json" },
+            method = RequestMethod.GET)
+
+    @Query("select u.id, u.locked, u.role, u.username, " +
+            "u.firstName, u.lastName, u.email, u.password, " +
+            "u.dayLimit, u.transactionLimit, u.phone " +
+            "from User as u")
+    ResponseEntity<List<User>> findAllUsers();
 
 
     @Operation(summary = "get a user by it's email", description = "Returns a list of Users.", security = {
         @SecurityRequirement(name = "bearerAuth")    }, tags={ "Employee" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "the User", content = @Content(array = @ArraySchema(schema = @Schema(implementation = User.class)))),
-        
+
         @ApiResponse(responseCode = "400", description = "bad input parameter"),
-        
+
         @ApiResponse(responseCode = "401", description = "Authorization failed"),
-        
+
         @ApiResponse(responseCode = "404", description = "User not found") })
     @RequestMapping(value = "/users/{email}",
-        produces = { "application/json" }, 
+        produces = { "application/json" },
         method = RequestMethod.GET)
-    ResponseEntity<User> userByEmail(@Parameter(in = ParameterIn.PATH, description = "the userEmail", required=true, schema=@Schema()) @PathVariable("email") String email);
+
+//    @Query("select u.id, u.locked, u.role, u.username, " +
+//            "u.firstName, u.lastName, u.email, u.password, " +
+//            "u.dayLimit, u.transactionLimit, u.phone " +
+//            "from User as u where u.email = :email")
+    ResponseEntity<User> findUsersByEmail(@Parameter(in = ParameterIn.PATH, description = "the userEmail", required=true, schema=@Schema()) @PathVariable("email") String email);
 
 
     @Operation(summary = "get a user by it's id", description = "Returns a list of Users.", security = {
         @SecurityRequirement(name = "bearerAuth")    }, tags={ "Employee" })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "the User", content = @Content(array = @ArraySchema(schema = @Schema(implementation = User.class)))),
-        
+
         @ApiResponse(responseCode = "400", description = "bad input parameter"),
-        
+
         @ApiResponse(responseCode = "401", description = "Authorization failed"),
-        
+
         @ApiResponse(responseCode = "404", description = "User not found") })
     @RequestMapping(value = "/users/{id}",
-        produces = { "application/json" }, 
+        produces = { "application/json" },
         method = RequestMethod.GET)
-    ResponseEntity<List<User>> userById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Long id);
+    ResponseEntity<User> getUserById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Integer id);
 
 }
 
