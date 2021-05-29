@@ -2,6 +2,7 @@ package io.swagger.api;
 
 import io.swagger.model.Account;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.models.Response;
 import io.swagger.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -26,6 +27,8 @@ import javax.validation.constraints.*;
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.IllegalFormatConversionException;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +36,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("Accounts")
 public class AccountsApiController implements AccountsApi {
-
+    //TO DO search by username
     @Autowired
     private AccountService accountService;
 
@@ -50,34 +53,69 @@ public class AccountsApiController implements AccountsApi {
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity addAccount(@Parameter(in = ParameterIn.DEFAULT, description = "account", required=true, schema=@Schema()) @Valid @RequestBody Account body) {
-        accountService.addAccount(body);
-        return ResponseEntity.status(HttpStatus.CREATED).body(body.getIban());
+    public ResponseEntity addAccount(@Parameter(in = ParameterIn.DEFAULT, description = "account", required=true, schema=@Schema()) @Valid @RequestBody Account acc) {
+
+        List<Account> accounts = accountService.getAccountsByIban(acc.getIban());
+        if (!acc.getIban().matches("NL\\d{2}INHO0\\d{9}") || !accounts.isEmpty()){ //NL01INHO0123456789
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(acc);
+        }else {
+            accountService.addAccount(acc);
+            return ResponseEntity.status(HttpStatus.CREATED).body(acc);
+        }
+
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Account>> allAccounts(@Min(0)@Parameter(in = ParameterIn.QUERY, description = "number of accounts to skip for pagination" ,schema=@Schema(allowableValues={  }
 )) @Valid @RequestParam(value = "skip", required = false) Integer skip,@Min(0) @Max(100) @Parameter(in = ParameterIn.QUERY, description = "maximum number of accounts to return" ,schema=@Schema(allowableValues={  }, maximum="100"
 )) @Valid @RequestParam(value = "limit", required = false) Integer limit) {
+        //TO DO: Skip and Limit
         List<Account> accounts = accountService.getAllAccounts();
         return ResponseEntity.status(200).body(accounts);
     }
 
-    @RequestMapping(value = "{iban}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/iban/{iban}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Account>> findAccountsByIban(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("iban") String iban) {
-        List<Account> acc = accountService.getAccountsByIban(iban);
-        return ResponseEntity.status(HttpStatus.OK).body(acc);
+        List<Account> accounts = accountService.getAllAccounts();
+
+        List<Account> foundAccs = new ArrayList<Account>();
+        for(Account a : accounts){
+            if(a.getIban().contains(iban)){
+                foundAccs.add(a);
+            }
+        }
+
+        if(foundAccs == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(foundAccs);
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.OK).body(foundAccs);
+        }
+
     }
 
-    @RequestMapping(value = "{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Account>> findAccountsByUserId(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("userId") long userId) {
-            List<Account> accounts = accountService.getAccountsByUserId(userId);
-            return ResponseEntity.status(HttpStatus.OK).body(accounts);
+    @RequestMapping(value = "/userId/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Account>> findAccountsByUserId(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
+        List<Account> foundAccs = accountService.getAccountsByUserId(userId);
+
+        if(foundAccs == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(foundAccs);
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.OK).body(foundAccs);
+        }
     }
 
-    public ResponseEntity<Void> lockAccount(@Parameter(in = ParameterIn.PATH, description = "iban to lock", required=true, schema=@Schema()) @PathVariable("iban") String iban,@Parameter(in = ParameterIn.HEADER, description = "" ,schema=@Schema()) @RequestHeader(value="api_key", required=false) String apiKey) {
-        String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+    @RequestMapping(value = "/lock/{iban}", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity lockAccount(@Parameter(in = ParameterIn.PATH, description = "iban to lock", required=true, schema=@Schema()) @PathVariable("iban") String iban, @Parameter(in = ParameterIn.HEADER, description = "" ,schema=@Schema()) @RequestHeader(value="api_key", required=false) String apiKey) {
+        Account acc = accountService.getAccountByIban(iban);
+        if (acc != null){
+            acc.setLocked(true);
+            return ResponseEntity.status(HttpStatus.OK).body(acc);
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(acc);
+        }
+
     }
 
     @RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)

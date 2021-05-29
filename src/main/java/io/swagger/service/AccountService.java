@@ -30,6 +30,8 @@ public class AccountService {
 
     public List<Account> getAccountsByIban(String iban){return accountRepository.findByIban(iban);}
 
+    public Account getAccountByIban(String iban){return accountRepository.findOneByIban(iban);}
+
     public List<Account> getAccountsByUserId(Long userId){
         return accountRepository.findByUserId(userId);
     }

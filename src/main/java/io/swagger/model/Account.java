@@ -64,6 +64,9 @@ public class Account   {
   @JsonProperty("absoluteLimit")
   private BigDecimal absoluteLimit = null;
 
+  @JsonProperty("locked")
+  private Boolean locked = null;
+
   @JsonProperty("userId")
   private Long userId = null;
 
@@ -149,6 +152,27 @@ public class Account   {
     this.absoluteLimit = absoluteLimit;
   }
 
+  public Account locked(Boolean locked) {
+    this.locked = locked;
+    return this;
+  }
+
+  /**
+   * Get absoluteLimit
+   * @return absoluteLimit
+   **/
+  @Schema(required = true, description = "")
+  @NotNull
+
+  @Valid
+  public Boolean getLocked() {
+    return locked;
+  }
+
+  public void setLocked(Boolean locked) {
+    this.locked = locked;
+  }
+
   public Account userId(Long userId) {
     this.userId = userId;
     return this;
@@ -183,12 +207,13 @@ public class Account   {
         Objects.equals(this.type, account.type) &&
         Objects.equals(this.balance, account.balance) &&
         Objects.equals(this.absoluteLimit, account.absoluteLimit) &&
+        Objects.equals(this.locked, account.locked) &&
         Objects.equals(this.userId, account.userId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(iban, type, balance, absoluteLimit, userId);
+    return Objects.hash(iban, type, balance, absoluteLimit, locked, userId);
   }
 
   @Override
@@ -200,6 +225,7 @@ public class Account   {
     sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("    balance: ").append(toIndentedString(balance)).append("\n");
     sb.append("    absoluteLimit: ").append(toIndentedString(absoluteLimit)).append("\n");
+    sb.append("    locked: ").append(toIndentedString(locked)).append("\n");
     sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
     sb.append("}");
     return sb.toString();
