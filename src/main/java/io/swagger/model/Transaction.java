@@ -1,5 +1,6 @@
 package io.swagger.model;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -8,6 +9,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import org.threeten.bp.OffsetDateTime;
 import org.springframework.validation.annotation.Validated;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
@@ -17,10 +22,25 @@ import javax.validation.constraints.*;
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-05-17T12:11:50.256Z[GMT]")
 
-
+@Entity
 public class Transaction extends NewTransaction  {
   @JsonProperty("id")
+  @Id
+  @GeneratedValue
   private Integer id = null;
+
+  public Transaction() {
+  }
+
+  public Transaction(NewTransaction trans) {
+    this.id = null;
+    this.setAmount(trans.getAmount());
+    this.setTimestamp(trans.getTimestamp());
+    //this.setTimestamp(LocalDateTime.now());
+    this.setAccountTo(trans.getAccountTo());
+    this.setAccountFrom(trans.getAccountFrom());
+    this.setPerformingUser(trans.getPerformingUser());
+  }
 
   public Transaction id(Integer id) {
     this.id = id;

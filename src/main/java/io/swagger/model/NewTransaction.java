@@ -1,5 +1,6 @@
 package io.swagger.model;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -7,6 +8,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import org.threeten.bp.OffsetDateTime;
 import org.springframework.validation.annotation.Validated;
+
+import javax.persistence.MappedSuperclass;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
@@ -16,13 +19,13 @@ import javax.validation.constraints.*;
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-05-17T12:11:50.256Z[GMT]")
 
-
+@MappedSuperclass
 public class NewTransaction   {
   @JsonProperty("amount")
   private BigDecimal amount = null;
 
   @JsonProperty("timestamp")
-  private OffsetDateTime timestamp = null;
+  private LocalDateTime timestamp = null;
 
   @JsonProperty("accountFrom")
   private String accountFrom = null;
@@ -54,7 +57,7 @@ public class NewTransaction   {
     this.amount = amount;
   }
 
-  public NewTransaction timestamp(OffsetDateTime timestamp) {
+  public NewTransaction timestamp(LocalDateTime timestamp) {
     this.timestamp = timestamp;
     return this;
   }
@@ -67,11 +70,11 @@ public class NewTransaction   {
       @NotNull
 
     @Valid
-    public OffsetDateTime getTimestamp() {
+    public LocalDateTime getTimestamp() {
     return timestamp;
   }
 
-  public void setTimestamp(OffsetDateTime timestamp) {
+  public void setTimestamp(LocalDateTime timestamp) {
     this.timestamp = timestamp;
   }
 
