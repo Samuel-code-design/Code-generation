@@ -1,8 +1,7 @@
 package io.swagger.api;
-
-import io.swagger.model.NewUser;
-import io.swagger.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.model.dto.CreateUserDTO;
+import io.swagger.model.User;
 import io.swagger.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -11,10 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
@@ -40,22 +36,23 @@ public class UsersApiController implements UsersApi {
         this.service = service;
     }
 
-    public ResponseEntity<Void> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "withdraw", required=true, schema=@Schema()) @Valid @RequestBody NewUser body) {
+
+    public ResponseEntity<Void> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "NewUser body", required=true, schema=@Schema()) @Valid @RequestBody CreateUserDTO body) {
         service.createUser(body);
-        return (ResponseEntity<Void>) ResponseEntity.status(HttpStatus.OK);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    public ResponseEntity<Void> lockUserByEmail(@Parameter(in = ParameterIn.PATH, description = "the email", required=true, schema=@Schema()) @PathVariable("email") String email) {
+    public ResponseEntity<Void> lockUserByEmail(@Parameter(in = ParameterIn.QUERY, description = "the email", required=true, schema=@Schema()) @Valid @RequestParam(value = "email", required = true) String email) {
         service.lockUserByEmail(email);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    public ResponseEntity<Void> lockUserById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Integer id) {
+    public ResponseEntity<Void> lockUserById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Long id) {
         service.lockUserById(id);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    public ResponseEntity<Void> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody User body) {
+    public ResponseEntity<Void> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "The new user information", required=true, schema=@Schema()) @Valid @RequestBody User body) {
         service.updateUser(body);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
@@ -65,14 +62,13 @@ public class UsersApiController implements UsersApi {
         return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 
-    public ResponseEntity<User> userByEmail(@Parameter(in = ParameterIn.PATH, description = "the userEmail", required=true, schema=@Schema()) @PathVariable("email") String email) throws IOException {
+    public ResponseEntity<User> userByEmail(@Parameter(in = ParameterIn.QUERY, description = "the userEmail", required=true, schema=@Schema()) @Valid @RequestParam(value = "email", required = true) String email) throws IOException {
         User user = service.userByEmail(email);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
-    public ResponseEntity<User> userById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Integer id) throws IOException {
+    public ResponseEntity<User> userById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Long id) throws IOException {
         User user = service.userById(id);
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
-
 }

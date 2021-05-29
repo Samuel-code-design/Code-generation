@@ -7,10 +7,12 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
-import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import org.springframework.validation.annotation.Validated;
+
+
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
