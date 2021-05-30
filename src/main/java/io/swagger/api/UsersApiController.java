@@ -1,7 +1,8 @@
 package io.swagger.api;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.model.dto.CreateUserDTO;
 import io.swagger.model.User;
+import io.swagger.service.EmployeeService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -9,10 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
@@ -29,72 +27,48 @@ public class UsersApiController implements UsersApi {
 
     private final HttpServletRequest request;
 
+    private final EmployeeService service;
+
     @org.springframework.beans.factory.annotation.Autowired
-    public UsersApiController(ObjectMapper objectMapper, HttpServletRequest request) {
+    public UsersApiController(ObjectMapper objectMapper, HttpServletRequest request, EmployeeService service) {
         this.objectMapper = objectMapper;
         this.request = request;
+        this.service = service;
     }
 
-    public ResponseEntity<Void> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "withdraw", required=true, schema=@Schema()) @Valid @RequestBody User body) {
-        String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+
+    public ResponseEntity<Void> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "NewUser body", required=true, schema=@Schema()) @Valid @RequestBody CreateUserDTO body) {
+        service.createUser(body);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    public ResponseEntity<Void> lockUserByEmail(@Parameter(in = ParameterIn.PATH, description = "the email", required=true, schema=@Schema()) @PathVariable("email") String email) {
-        String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<Void> lockUserByEmail(@Parameter(in = ParameterIn.QUERY, description = "the email", required=true, schema=@Schema()) @Valid @RequestParam(value = "email", required = true) String email) {
+        service.lockUserByEmail(email);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
     public ResponseEntity<Void> lockUserById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Long id) {
-        String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+        service.lockUserById(id);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    public ResponseEntity<Void> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody List<User> body) {
-        String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<Void> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "The new user information", required=true, schema=@Schema()) @Valid @RequestBody User body) {
+        service.updateUser(body);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    public ResponseEntity<List<User>> user(@Parameter(in = ParameterIn.QUERY, description = "Search a user by a string" ,schema=@Schema()) @Valid @RequestParam(value = "searchstring", required = false) String searchstring) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<List<User>>(objectMapper.readValue("[ {\n  \"id\" : 1,\n  \"locked\" : true\n}, {\n  \"id\" : 1,\n  \"locked\" : true\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<List<User>>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-
-        return new ResponseEntity<List<User>>(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<List<User>> getUsers(@Parameter(in = ParameterIn.QUERY, description = "Search a user by a string" ,schema=@Schema()) @Valid @RequestParam(value = "searchstring", required = false) String searchstring) throws IOException {
+        List<User> users = service.getUsers(searchstring);
+        return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 
-    public ResponseEntity<List<User>> userByEmail(@Parameter(in = ParameterIn.PATH, description = "the userEmail", required=true, schema=@Schema()) @PathVariable("email") String email) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<List<User>>(objectMapper.readValue("[ {\n  \"id\" : 1,\n  \"locked\" : true\n}, {\n  \"id\" : 1,\n  \"locked\" : true\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<List<User>>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-
-        return new ResponseEntity<List<User>>(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<User> userByEmail(@Parameter(in = ParameterIn.QUERY, description = "the userEmail", required=true, schema=@Schema()) @Valid @RequestParam(value = "email", required = true) String email) throws IOException {
+        User user = service.userByEmail(email);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 
-    public ResponseEntity<List<User>> userById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Long id) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<List<User>>(objectMapper.readValue("[ {\n  \"id\" : 1,\n  \"locked\" : true\n}, {\n  \"id\" : 1,\n  \"locked\" : true\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<List<User>>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-
-        return new ResponseEntity<List<User>>(HttpStatus.NOT_IMPLEMENTED);
+    public ResponseEntity<User> userById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Long id) throws IOException {
+        User user = service.userById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(user);
     }
-
 }
