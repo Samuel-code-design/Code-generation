@@ -1,5 +1,10 @@
 package io.swagger.api;
 
+import io.swagger.repository.TransactionRepository;
+import io.swagger.service.TransactionService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 import org.threeten.bp.LocalDate;
 import io.swagger.model.Transaction;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,13 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.*;
@@ -35,10 +33,14 @@ import java.util.Map;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-05-17T12:11:50.256Z[GMT]")
 @RestController
+@RequestMapping("Customers/Transactions")
 public class CustomersApiController implements CustomersApi {
 
-    private static final Logger log = LoggerFactory.getLogger(CustomersApiController.class);
+    @Autowired
+    private TransactionService transactionService;
 
+    private static final Logger log = LoggerFactory.getLogger(CustomersApiController.class);
+    
     private final ObjectMapper objectMapper;
 
     private final HttpServletRequest request;
@@ -49,18 +51,10 @@ public class CustomersApiController implements CustomersApi {
         this.request = request;
     }
 
+    @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Transaction>> getTransactions(@Parameter(in = ParameterIn.QUERY, description = "limit of transactions to get" ,schema=@Schema()) @Valid @RequestParam(value = "limit", required = false) Long limit,@Parameter(in = ParameterIn.QUERY, description = "get transactions from this date" ,schema=@Schema()) @Valid @RequestParam(value = "date", required = false) LocalDate date) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<List<Transaction>>(objectMapper.readValue("[ {\n  \"id\" : 1\n}, {\n  \"id\" : 1\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<List<Transaction>>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-
-        return new ResponseEntity<List<Transaction>>(HttpStatus.NOT_IMPLEMENTED);
+        List<Transaction> transactions = transactionService.getAllTransactions();
+        return ResponseEntity.status(200).body(transactions);
     }
 
 }
