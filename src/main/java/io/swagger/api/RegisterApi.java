@@ -6,6 +6,8 @@
 package io.swagger.api;
 
 import io.swagger.model.CustomerRegister;
+import io.swagger.model.User;
+import io.swagger.model.dto.RegisterDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -46,7 +48,7 @@ public interface RegisterApi {
     @RequestMapping(value = "/register",
         consumes = { "application/json" }, 
         method = RequestMethod.POST)
-    ResponseEntity<Void> registerUser(@Parameter(in = ParameterIn.DEFAULT, description = "register customer user", schema=@Schema()) @Valid @RequestBody CustomerRegister body);
+    ResponseEntity<User> registerUser(@Parameter(in = ParameterIn.DEFAULT, description = "register customer user", schema=@Schema()) @Valid @RequestBody RegisterDTO body);
 
 }
 

@@ -1,8 +1,8 @@
 package io.swagger.api;
 
-import io.swagger.model.InlineResponse400;
-import io.swagger.model.NewTransaction;
+import io.swagger.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.service.TransactionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -12,17 +12,14 @@ import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.hibernate.type.OffsetDateTimeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,12 +27,17 @@ import javax.validation.constraints.*;
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-05-17T12:11:50.256Z[GMT]")
 @RestController
+@RequestMapping("Transactions")
 public class TransactionsApiController implements TransactionsApi {
+
+    @Autowired
+    private TransactionService transactionService;
 
     private static final Logger log = LoggerFactory.getLogger(TransactionsApiController.class);
 
@@ -49,9 +51,15 @@ public class TransactionsApiController implements TransactionsApi {
         this.request = request;
     }
 
-    public ResponseEntity<Void> makeTransactionCustomer(@Parameter(in = ParameterIn.DEFAULT, description = "transaction", required=true, schema=@Schema()) @Valid @RequestBody NewTransaction body) {
-        String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity makeTransactionCustomer(@Parameter(in = ParameterIn.DEFAULT, description = "transaction", required=true, schema=@Schema()) @Valid @RequestBody NewTransaction body) {
+        Transaction transaction = new Transaction(body);
+        //employee kan voor iedereen transactions maken
+        //customer kan alleen vanaf zijn eigen accountFrom versturen
+        //savings account kan alleen naar of van accounts van de zelfde gebruiker
+        //check als de customer wel genoeg op ze bank heeft en al die limits
+        //alle checks nog eens na lopen
+        transactionService.addTransaction(transaction);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Transaction created: " + transaction.getId());
     }
-
 }
