@@ -9,7 +9,6 @@ public class CreateUserDTO {
 
     private String username;
     private String password;
-    private String password2;
     private String firstName;
     private String lastName;
     private String email;
@@ -24,10 +23,9 @@ public class CreateUserDTO {
         this.roles = role;
     }
 
-    public CreateUserDTO(String username, String password, String password2, String firstName, String lastName, String email, String phone, List<Role> roles) {
+    public CreateUserDTO(String username, String password, String firstName, String lastName, String email, String phone, List<Role> roles) {
         this.username = username;
         this.password = password;
-        this.password2 = password2;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
@@ -49,14 +47,6 @@ public class CreateUserDTO {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getPassword2() {
-        return password2;
-    }
-
-    public void setPassword2(String password2) {
-        this.password2 = password2;
     }
 
     public String getFirstName() {
