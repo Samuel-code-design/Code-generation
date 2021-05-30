@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import org.springframework.validation.annotation.Validated;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
@@ -16,9 +19,10 @@ import javax.validation.constraints.*;
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-05-17T12:11:50.256Z[GMT]")
 
-
+@Entity
 public class Account   {
   @JsonProperty("iban")
+  @Id
   private String iban = null;
 
   /**
@@ -55,10 +59,13 @@ public class Account   {
   private TypeEnum type = null;
 
   @JsonProperty("balance")
-  private BigDecimal balance = null;
+  private Double balance = null;
 
   @JsonProperty("absoluteLimit")
   private BigDecimal absoluteLimit = null;
+
+  @JsonProperty("locked")
+  private Boolean locked = null;
 
   @JsonProperty("userId")
   private Long userId = null;
@@ -103,7 +110,7 @@ public class Account   {
     this.type = type;
   }
 
-  public Account balance(BigDecimal balance) {
+  public Account balance(Double balance) {
     this.balance = balance;
     return this;
   }
@@ -116,11 +123,11 @@ public class Account   {
       @NotNull
 
     @Valid
-    public BigDecimal getBalance() {
+    public Double getBalance() {
     return balance;
   }
 
-  public void setBalance(BigDecimal balance) {
+  public void setBalance(Double balance) {
     this.balance = balance;
   }
 
@@ -143,6 +150,27 @@ public class Account   {
 
   public void setAbsoluteLimit(BigDecimal absoluteLimit) {
     this.absoluteLimit = absoluteLimit;
+  }
+
+  public Account locked(Boolean locked) {
+    this.locked = locked;
+    return this;
+  }
+
+  /**
+   * Get absoluteLimit
+   * @return absoluteLimit
+   **/
+  @Schema(required = true, description = "")
+  @NotNull
+
+  @Valid
+  public Boolean getLocked() {
+    return locked;
+  }
+
+  public void setLocked(Boolean locked) {
+    this.locked = locked;
   }
 
   public Account userId(Long userId) {
@@ -179,12 +207,13 @@ public class Account   {
         Objects.equals(this.type, account.type) &&
         Objects.equals(this.balance, account.balance) &&
         Objects.equals(this.absoluteLimit, account.absoluteLimit) &&
+        Objects.equals(this.locked, account.locked) &&
         Objects.equals(this.userId, account.userId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(iban, type, balance, absoluteLimit, userId);
+    return Objects.hash(iban, type, balance, absoluteLimit, locked, userId);
   }
 
   @Override
@@ -196,6 +225,7 @@ public class Account   {
     sb.append("    type: ").append(toIndentedString(type)).append("\n");
     sb.append("    balance: ").append(toIndentedString(balance)).append("\n");
     sb.append("    absoluteLimit: ").append(toIndentedString(absoluteLimit)).append("\n");
+    sb.append("    locked: ").append(toIndentedString(locked)).append("\n");
     sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
     sb.append("}");
     return sb.toString();

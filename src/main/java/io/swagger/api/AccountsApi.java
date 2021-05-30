@@ -76,10 +76,10 @@ public interface AccountsApi {
         @ApiResponse(responseCode = "401", description = "Authorization failed"),
         
         @ApiResponse(responseCode = "404", description = "Account not found") })
-    @RequestMapping(value = "/accounts/{iban}",
+    @RequestMapping(value = "/iban/{iban}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<Account>> findAccountsByIban(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("iban") Integer iban);
+    ResponseEntity<List<Account>> findAccountsByIban(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("iban") String iban);
 
 
     @Operation(summary = "Finds accounts by User Id", description = "", security = {
@@ -92,10 +92,10 @@ public interface AccountsApi {
         @ApiResponse(responseCode = "401", description = "Authorization failed"),
         
         @ApiResponse(responseCode = "404", description = "Account not found") })
-    @RequestMapping(value = "/accounts/{userId}",
+    @RequestMapping(value = "/userId/{userId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<Account>> findAccountsByUserId(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("userId") Integer userId);
+    ResponseEntity<List<Account>> findAccountsByUserId(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("userId") Long userId);
 
 
     @Operation(summary = "Lock account by iban", description = "", security = {
@@ -108,8 +108,8 @@ public interface AccountsApi {
         @ApiResponse(responseCode = "401", description = "Authorization failed"),
         
         @ApiResponse(responseCode = "404", description = "Account not found") })
-    @RequestMapping(value = "/accounts/{iban}",
-        method = RequestMethod.PUT)
+    @RequestMapping(value = "/lock/{iban}",
+            method = RequestMethod.PUT)
     ResponseEntity<Void> lockAccount(@Parameter(in = ParameterIn.PATH, description = "iban to lock", required=true, schema=@Schema()) @PathVariable("iban") String iban, @Parameter(in = ParameterIn.HEADER, description = "" ,schema=@Schema()) @RequestHeader(value="api_key", required=false) String apiKey);
 
 
