@@ -41,10 +41,10 @@ public class UsersApiController implements UsersApi {
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 
-    public ResponseEntity<Void> lockUserByEmail(@Parameter(in = ParameterIn.QUERY, description = "the email", required=true, schema=@Schema()) @Valid @RequestParam(value = "email", required = true) String email) {
-        service.lockUserByEmail(email);
-        return new ResponseEntity<Void>(HttpStatus.OK);
-    }
+//    public ResponseEntity<Void> lockUserByEmail(@Parameter(in = ParameterIn.QUERY, description = "the email", required=true, schema=@Schema()) @Valid @RequestParam(value = "email", required = true) String email) {
+//        service.lockUserByEmail(email);
+//        return new ResponseEntity<Void>(HttpStatus.OK);
+//    }
 
     public ResponseEntity<Void> lockUserById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Long id) {
         service.lockUserById(id);
@@ -58,19 +58,22 @@ public class UsersApiController implements UsersApi {
 
     public ResponseEntity<List<User>> getUsers(@Parameter(in = ParameterIn.QUERY, description = "Search a user by a string" ,schema=@Schema()) @Valid @RequestParam(value = "searchstring", required = false) String searchstring) throws IOException {
         List<User> users = service.getUsers(searchstring);
+        for (User u: users) {
+            u.setPassword("SECRET");
+        }
         if (users.toArray().length != 0){
             return ResponseEntity.status(HttpStatus.OK).body(users);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(users);
     }
-
-    public ResponseEntity<User> userByEmail(@Parameter(in = ParameterIn.QUERY, description = "the userEmail", required=true, schema=@Schema()) @Valid @RequestParam(value = "email", required = true) String email) throws IOException {
-        User user = service.userByEmail(email);
-        return ResponseEntity.status(HttpStatus.OK).body(user);
-    }
+//    public ResponseEntity<User> userByEmail(@Parameter(in = ParameterIn.QUERY, description = "the userEmail", required=true, schema=@Schema()) @Valid @RequestParam(value = "email", required = true) String email) throws IOException {
+//        User user = service.userByEmail(email);
+//        return ResponseEntity.status(HttpStatus.OK).body(user);
+//    }
 
     public ResponseEntity<User> userById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Long id) throws IOException {
         User user = service.userById(id);
+        user.setPassword("SECRET");
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 }

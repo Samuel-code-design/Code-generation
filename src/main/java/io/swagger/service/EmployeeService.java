@@ -72,31 +72,17 @@ public class EmployeeService {
         user.setRoles(newUser.getRole());
 
 
-        //generate account for user
-        User generated = repository.save(user);
-        generateAccountForUser(generated);
-    }
-    public void generateAccountForUser(User u){
-        Account account = new Account();
-        account.setBalance(0.0);
-        account.setAbsoluteLimit(BigDecimal.valueOf(0));
-        account.setIban(accountService.generateIban());
-        account.locked(false);
-        account.type(Account.TypeEnum.CURRENT);
-        account.userId(u.getId());
-
-        accountRepository.save(account);
+        //save the user and generate an account
+        generateAccountForUser(repository.save(user));
     }
 
-    //TODO: hoe krijg ik dit weg?
-    public void lockUserByEmail(String email) {
-        User u = repository.findByEmailEquals(email);
-        u.setLocked(true);
-        repository.save(u);
-    }
 
-    public void lockUserById( Long id) {
+    public void lockUserById(Long id) {
         User u = repository.findByIdEquals(id);
+        if (u == null){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "This user does not exist");
+        }
         u.setLocked(true);
         repository.save(u);
     }
@@ -112,18 +98,37 @@ public class EmployeeService {
     }
 
     public List<User> getUsers(String searchString) {
-        if (searchString != null){
-            return repository.findAllByEmailContaining(searchString); //TODO: ook username fistname en lastname
+        if (searchString != null && !searchString.equals("")){
+            return repository.findByEmailContainsOrUsernameContainsOrFirstNameContainsOrLastNameContaining
+                    (searchString, searchString, searchString, searchString);
+
         }
         return repository.findAll();
     }
 
-    public User userByEmail(String email) {
-        return  repository.findByEmailEquals(email);
+    public User userById(Long id) {
+        try {
+            return repository.findByIdEquals(id);
+        }
+        catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "This user does not exist");
+        }
     }
 
-    public User userById(Long id) {
-        return repository.findByIdEquals(id);
+    public void generateAccountForUser(User u){
+        BigDecimal ABSOLUTE_LIMIT = BigDecimal.valueOf(0);
+
+        Account acc = new Account();
+        acc.userId(u.getId());
+
+        acc.setBalance(0.0);
+        acc.setAbsoluteLimit(ABSOLUTE_LIMIT);
+        acc.setIban(accountService.generateIban());
+        acc.locked(false);
+        acc.type(Account.TypeEnum.CURRENT);
+
+        accountRepository.save(acc);
     }
 
 }

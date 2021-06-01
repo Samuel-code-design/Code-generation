@@ -18,7 +18,8 @@ public interface EmployeeRepository extends JpaRepository<User, Long> {
 //    void lockUserById(@Param("id") Integer id);
 
 
-    List<User> findAllByEmailContaining(String searchString);
+    List<User> findByEmailStartingWithOrUsernameStartingWithOrFirstNameStartingWithOrLastNameStartingWith(String email, String username, String firstName, String lastName);
+    List<User> findByEmailContainsOrUsernameContainsOrFirstNameContainsOrLastNameContaining(String email, String username, String firstName, String lastName);
 
 
 //    @Query("select u.id, u.locked, u.role, u.username, " +

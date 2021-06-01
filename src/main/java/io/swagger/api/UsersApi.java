@@ -58,20 +58,20 @@ public interface UsersApi {
 //        method = RequestMethod.PUT)
 //    ResponseEntity<Void> lockUserByEmail(@Parameter(in = ParameterIn.PATH, description = "the email", required=true, schema=@Schema()) @PathVariable("email") String email);
 
-    @Operation(summary = "lock user by email", description = "Lets an employee lock a user by an email", security = {
-            @SecurityRequirement(name = "bearerAuth")    }, tags={ "Employee" })
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Successfully updated user information"),
-
-            @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content(schema = @Schema(implementation = InlineResponse400.class))),
-
-            @ApiResponse(responseCode = "401", description = "Authorization failed"),
-
-            @ApiResponse(responseCode = "404", description = "User not found") })
-    @RequestMapping(value = "/user",
-            produces = { "application/json" },
-            method = RequestMethod.PUT)
-    ResponseEntity<Void> lockUserByEmail(@Parameter(in = ParameterIn.QUERY, description = "the email", required=true, schema=@Schema()) @Valid @RequestParam(value = "email", required = true) String email);
+//    @Operation(summary = "lock user by email", description = "Lets an employee lock a user by an email", security = {
+//            @SecurityRequirement(name = "bearerAuth")    }, tags={ "Employee" })
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "Successfully updated user information"),
+//
+//            @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content(schema = @Schema(implementation = InlineResponse400.class))),
+//
+//            @ApiResponse(responseCode = "401", description = "Authorization failed"),
+//
+//            @ApiResponse(responseCode = "404", description = "User not found") })
+//    @RequestMapping(value = "/user",
+//            produces = { "application/json" },
+//            method = RequestMethod.PUT)
+//    ResponseEntity<Void> lockUserByEmail(@Parameter(in = ParameterIn.QUERY, description = "the email", required=true, schema=@Schema()) @Valid @RequestParam(value = "email", required = true) String email);
 
 
     @Operation(summary = "lock user by id", description = "Lets an employee lock a user by an id", security = {
@@ -133,20 +133,20 @@ public interface UsersApi {
 //        method = RequestMethod.GET)
 //    ResponseEntity<User> userByEmail(@Parameter(in = ParameterIn.PATH, description = "the userEmail", required=true, schema=@Schema()) @PathVariable("email") String email) throws IOException;
 
-    @Operation(summary = "get a user by it's email", description = "Returns a user with specified email", security = {
-            @SecurityRequirement(name = "bearerAuth")    }, tags={ "Employee" })
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "the User", content = @Content(array = @ArraySchema(schema = @Schema(implementation = User.class)))),
-
-            @ApiResponse(responseCode = "400", description = "bad input parameter"),
-
-            @ApiResponse(responseCode = "401", description = "Authorization failed"),
-
-            @ApiResponse(responseCode = "404", description = "User not found") })
-    @RequestMapping(value = "/user",
-            produces = { "application/json" },
-            method = RequestMethod.GET) //path veranderd omdat hij anders te veel lijkt op: GetById of GetUsers
-    ResponseEntity<User> userByEmail(@Parameter(in = ParameterIn.QUERY, description = "the userEmail", schema=@Schema()) @Valid @RequestParam(value = "email", required = true) String email) throws IOException;
+//    @Operation(summary = "get a user by it's email", description = "Returns a user with specified email", security = {
+//            @SecurityRequirement(name = "bearerAuth")    }, tags={ "Employee" })
+//    @ApiResponses(value = {
+//            @ApiResponse(responseCode = "200", description = "the User", content = @Content(array = @ArraySchema(schema = @Schema(implementation = User.class)))),
+//
+//            @ApiResponse(responseCode = "400", description = "bad input parameter"),
+//
+//            @ApiResponse(responseCode = "401", description = "Authorization failed"),
+//
+//            @ApiResponse(responseCode = "404", description = "User not found") })
+//    @RequestMapping(value = "/user",
+//            produces = { "application/json" },
+//            method = RequestMethod.GET) //path veranderd omdat hij anders te veel lijkt op: GetById of GetUsers
+//    ResponseEntity<User> userByEmail(@Parameter(in = ParameterIn.QUERY, description = "the userEmail", schema=@Schema()) @Valid @RequestParam(value = "email", required = true) String email) throws IOException;
 
 
 
