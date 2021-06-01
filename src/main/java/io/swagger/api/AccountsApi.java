@@ -6,6 +6,7 @@
 package io.swagger.api;
 
 import io.swagger.model.Account;
+import io.swagger.model.dto.AccountDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -47,7 +48,7 @@ public interface AccountsApi {
     @RequestMapping(value = "/accounts",
         consumes = { "application/json" }, 
         method = RequestMethod.POST)
-    ResponseEntity<Void> addAccount(@Parameter(in = ParameterIn.DEFAULT, description = "account", required=true, schema=@Schema()) @Valid @RequestBody Account body);
+    ResponseEntity<Void> addAccount(@Parameter(in = ParameterIn.DEFAULT, description = "account", required=true, schema=@Schema()) @Valid @RequestBody AccountDTO body);
 
 
     @Operation(summary = "get all accounts", description = "Returns a list of Accounts.", security = {

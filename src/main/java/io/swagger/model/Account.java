@@ -2,10 +2,7 @@ package io.swagger.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigDecimal;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.Entity;
@@ -25,44 +22,14 @@ public class Account   {
   @Id
   private String iban = null;
 
-  /**
-   * Account type
-   */
-  public enum TypeEnum {
-    SAVING("SAVING"),
-    
-    CURRENT("CURRENT");
-
-    private String value;
-
-    TypeEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    @JsonCreator
-    public static TypeEnum fromValue(String text) {
-      for (TypeEnum b : TypeEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
   @JsonProperty("type")
-  private TypeEnum type = null;
+  private AccountType type = null;
 
   @JsonProperty("balance")
   private Double balance = null;
 
   @JsonProperty("absoluteLimit")
-  private BigDecimal absoluteLimit = null;
+  private Double absoluteLimit = null;
 
   @JsonProperty("locked")
   private Boolean locked = null;
@@ -90,7 +57,7 @@ public class Account   {
     this.iban = iban;
   }
 
-  public Account type(TypeEnum type) {
+  public Account type(AccountType type) {
     this.type = type;
     return this;
   }
@@ -102,11 +69,11 @@ public class Account   {
   @Schema(required = true, description = "Account type")
       @NotNull
 
-    public TypeEnum getType() {
+    public AccountType getType() {
     return type;
   }
 
-  public void setType(TypeEnum type) {
+  public void setType(AccountType type) {
     this.type = type;
   }
 
@@ -131,7 +98,7 @@ public class Account   {
     this.balance = balance;
   }
 
-  public Account absoluteLimit(BigDecimal absoluteLimit) {
+  public Account absoluteLimit(Double absoluteLimit) {
     this.absoluteLimit = absoluteLimit;
     return this;
   }
@@ -144,11 +111,11 @@ public class Account   {
       @NotNull
 
     @Valid
-    public BigDecimal getAbsoluteLimit() {
+    public Double getAbsoluteLimit() {
     return absoluteLimit;
   }
 
-  public void setAbsoluteLimit(BigDecimal absoluteLimit) {
+  public void setAbsoluteLimit(Double absoluteLimit) {
     this.absoluteLimit = absoluteLimit;
   }
 

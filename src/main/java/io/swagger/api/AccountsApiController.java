@@ -2,6 +2,7 @@ package io.swagger.api;
 
 import io.swagger.model.Account;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.model.dto.AccountDTO;
 import io.swagger.models.Response;
 import io.swagger.service.AccountService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,10 +28,7 @@ import javax.validation.constraints.*;
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.IllegalFormatConversionException;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-05-17T12:11:50.256Z[GMT]")
 @RestController
@@ -53,16 +51,10 @@ public class AccountsApiController implements AccountsApi {
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity addAccount(@Parameter(in = ParameterIn.DEFAULT, description = "account", required=true, schema=@Schema()) @Valid @RequestBody Account acc) {
+    public ResponseEntity addAccount(@Parameter(in = ParameterIn.DEFAULT, description = "account", required=true, schema=@Schema()) @Valid @RequestBody AccountDTO acc) {
 
-        List<Account> accounts = accountService.getAccountsByIban(acc.getIban());
-        if (!acc.getIban().matches("NL\\d{2}INHO0\\d{9}") || !accounts.isEmpty()){ //NL01INHO0123456789
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(acc);
-        }else {
-            accountService.addAccount(acc);
-            return ResponseEntity.status(HttpStatus.CREATED).body(acc);
-        }
-
+        accountService.addAccount(acc);
+        return ResponseEntity.status(HttpStatus.CREATED).body(acc);
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -120,7 +112,7 @@ public class AccountsApiController implements AccountsApi {
 
     @RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity updateAccount(@Parameter(in = ParameterIn.DEFAULT, description = "account", required=true, schema=@Schema()) @Valid @RequestBody Account body) {
-        accountService.addAccount(body);
+        accountService.updateAccount(body);
         return ResponseEntity.status(HttpStatus.CREATED).body(body.getIban());
     }
 
