@@ -36,7 +36,6 @@ public class UsersApiController implements UsersApi {
         this.service = service;
     }
 
-
     public ResponseEntity<Void> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "NewUser body", required=true, schema=@Schema()) @Valid @RequestBody CreateUserDTO body) {
         service.createUser(body);
         return new ResponseEntity<Void>(HttpStatus.OK);
@@ -59,7 +58,10 @@ public class UsersApiController implements UsersApi {
 
     public ResponseEntity<List<User>> getUsers(@Parameter(in = ParameterIn.QUERY, description = "Search a user by a string" ,schema=@Schema()) @Valid @RequestParam(value = "searchstring", required = false) String searchstring) throws IOException {
         List<User> users = service.getUsers(searchstring);
-        return ResponseEntity.status(HttpStatus.OK).body(users);
+        if (users.toArray().length != 0){
+            return ResponseEntity.status(HttpStatus.OK).body(users);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(users);
     }
 
     public ResponseEntity<User> userByEmail(@Parameter(in = ParameterIn.QUERY, description = "the userEmail", required=true, schema=@Schema()) @Valid @RequestParam(value = "email", required = true) String email) throws IOException {

@@ -68,7 +68,7 @@ public interface UsersApi {
             @ApiResponse(responseCode = "401", description = "Authorization failed"),
 
             @ApiResponse(responseCode = "404", description = "User not found") })
-    @RequestMapping(value = "/users",
+    @RequestMapping(value = "/user",
             produces = { "application/json" },
             method = RequestMethod.PUT)
     ResponseEntity<Void> lockUserByEmail(@Parameter(in = ParameterIn.QUERY, description = "the email", required=true, schema=@Schema()) @Valid @RequestParam(value = "email", required = true) String email);
