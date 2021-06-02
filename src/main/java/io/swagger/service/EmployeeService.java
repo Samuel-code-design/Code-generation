@@ -1,5 +1,6 @@
 package io.swagger.service;
 import io.swagger.model.Account;
+import io.swagger.model.Role;
 import io.swagger.model.dto.CreateUserDTO;
 import io.swagger.model.User;
 import io.swagger.repository.AccountRepository;
@@ -16,11 +17,13 @@ import java.util.List;
 
 @Service
 public class EmployeeService {
+    //TODO: messages werken niet
+    //todo: responses Httpstatus 200 message (wanneer het goed gaat)
+
+    //TODO: ook savings account aanmaken?
     private final EmployeeRepository repository;
     private final AccountRepository accountRepository;
     private final AccountService accountService;
-
-
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -33,75 +36,77 @@ public class EmployeeService {
         this.accountService = accountService;
     }
 
-    public void createUser(CreateUserDTO newUser){
+    public User createUser(CreateUserDTO body){
+        //some standard values
         Long DAY_LIMIT = 1000L;
         Long TRANSACTION_LIMIT = 1000L;
-
         int MINIMUM_PASSWORD_LENGTH = 6;
-        String password = newUser.getPassword();
-        String email = newUser.getEmail();
-        String username = newUser.getUsername();
-        String phone = newUser.getPhone();
 
-        for (User u: repository.findAll()) {
-            if (u.getUsername().equals(username)){
-                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
-                        "Username is already in use, please try again and choose a different one");
-            }
-            else if (u.getEmail().equals(email) || u.getPhone().equals(phone)){
-                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
-                        "User already exists");
-            }
-            else if (password.length() < MINIMUM_PASSWORD_LENGTH){
-                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
-                        "Password is too short, choose a longer one and try again");
-            }
+        //check if the user is valid
+
+        if (repository.existsByUsername(body.getUsername())){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "Username is already in use, please try again and choose a different one");
         }
+        else if (repository.existsByEmail(body.getEmail()) || repository.existsByPhone(body.getPhone())){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "User already exists");
+        }
+        else if (body.getPassword().length() < MINIMUM_PASSWORD_LENGTH){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "Password is too short, choose a longer one and try again");
+        }
+        //make the user
         User user = new User();
         user.setId(null);
         user.setLocked(false);
         user.setDayLimit(DAY_LIMIT);
         user.setTransactionLimit(TRANSACTION_LIMIT);
 
-        user.setEmail(email);
-        user.setPassword(passwordEncoder.encode(newUser.getPassword()));
-        user.setUsername(username);
-        user.setFirstName(newUser.getFirstName());
-        user.setLastName(newUser.getLastName());
-        user.setPhone(phone);
-        user.setRoles(newUser.getRole());
+        user.setEmail(body.getEmail());
+        user.setUsername(body.getUsername());
+        user.setFirstName(body.getFirstName());
+        user.setLastName(body.getLastName());
+        user.setPhone(body.getPhone());
+        user.setRoles(body.getRole());
 
+        //encode the password
+        user.setPassword(passwordEncoder.encode(body.getPassword()));
 
-        //save the user and generate an account
-        generateAccountForUser(repository.save(user));
+        //check if new user is also a customer
+        if (body.getRole().contains(Role.ROLE_CUSTOMER)){
+            //save the user and generate a CURRENT account
+            generateAccountForUser(repository.save(user));
+        } else {
+            repository.save(user);
+        }
+        return user;
     }
 
-
-    public void lockUserById(Long id) {
-        User u = repository.findByIdEquals(id);
-        if (u == null){
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
-                    "This user does not exist");
-        }
+    public User lockUserById(Long id) {
+        User u = userById(id);
         u.setLocked(true);
-        repository.save(u);
+        return repository.save(u);
     }
 
-    public void updateUser(User body) {
-        for (User u: repository.findAll()) {
-            if (u.getUsername().equals(body.getUsername())){
-                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+    public User updateUser(User body) {
+        //Moet dit wel zo??
+        // als je een username update kan je dan nog inloggen?
+        // wat als de user alleen zijn daylimit wil update?
+
+        if (repository.existsByUsername(body.getUsername())){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                     "Username is already in use choose a different one");
-            }
         }
-        repository.save(body);
+        //encode the password
+        body.setPassword(passwordEncoder.encode(body.getPassword()));
+        return repository.save(body);
     }
 
     public List<User> getUsers(String searchString) {
         if (searchString != null && !searchString.equals("")){
             return repository.findByEmailContainsOrUsernameContainsOrFirstNameContainsOrLastNameContaining
                     (searchString, searchString, searchString, searchString);
-
         }
         return repository.findAll();
     }
@@ -110,15 +115,14 @@ public class EmployeeService {
         try {
             return repository.findByIdEquals(id);
         }
-        catch (Exception e){
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
-                    "This user does not exist");
+        catch (ResponseStatusException e){
+            throw new ResponseStatusException(HttpStatus.NO_CONTENT,
+                    "Username is already in use choose a different one");
         }
     }
 
     public void generateAccountForUser(User u){
         BigDecimal ABSOLUTE_LIMIT = BigDecimal.valueOf(0);
-
         Account acc = new Account();
         acc.userId(u.getId());
 
@@ -127,8 +131,6 @@ public class EmployeeService {
         acc.setIban(accountService.generateIban());
         acc.locked(false);
         acc.type(Account.TypeEnum.CURRENT);
-
         accountRepository.save(acc);
     }
-
 }

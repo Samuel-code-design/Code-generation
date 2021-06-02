@@ -41,7 +41,7 @@ public interface UsersApi {
             produces = { "application/json" },
             consumes = { "application/json" },
             method = RequestMethod.POST)
-    ResponseEntity<Void> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "withdraw", required=true, schema=@Schema()) @Valid @RequestBody CreateUserDTO body);
+    ResponseEntity<User> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "withdraw", required=true, schema=@Schema()) @Valid @RequestBody CreateUserDTO body);
 
 //    @Operation(summary = "lock user by email", description = "Lets an employee lock a user by an email", security = {
 //        @SecurityRequirement(name = "bearerAuth")    }, tags={ "Employee" })
@@ -87,7 +87,7 @@ public interface UsersApi {
     @RequestMapping(value = "/users/{id}",
             produces = { "application/json" },
             method = RequestMethod.PUT)
-    ResponseEntity<Void> lockUserById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Long id);
+    ResponseEntity<User> lockUserById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Long id);
 
 
     @Operation(summary = "update information of a user", description = "Lets an employee update user information", security = {
@@ -102,7 +102,7 @@ public interface UsersApi {
             produces = { "application/json" },
             consumes = { "application/json" },
             method = RequestMethod.PUT)
-    ResponseEntity<Void> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody User body);
+    ResponseEntity<User> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody User body);
 
 
     @Operation(summary = "get all the users", description = "Returns a list of Users.", security = {
@@ -149,7 +149,6 @@ public interface UsersApi {
 //    ResponseEntity<User> userByEmail(@Parameter(in = ParameterIn.QUERY, description = "the userEmail", schema=@Schema()) @Valid @RequestParam(value = "email", required = true) String email) throws IOException;
 
 
-
     @Operation(summary = "get a user by it's id", description = "Returns a user with specified id", security = {
             @SecurityRequirement(name = "bearerAuth")    }, tags={ "Employee" })
     @ApiResponses(value = {
@@ -159,7 +158,10 @@ public interface UsersApi {
 
             @ApiResponse(responseCode = "401", description = "Authorization failed"),
 
+//            @ApiResponse(responseCode = "204", description = "User not found"),
+
             @ApiResponse(responseCode = "404", description = "User not found") })
+
     @RequestMapping(value = "/users/{id}",
             produces = { "application/json" },
             method = RequestMethod.GET)

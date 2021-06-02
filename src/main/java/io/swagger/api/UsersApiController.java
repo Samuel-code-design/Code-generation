@@ -36,40 +36,33 @@ public class UsersApiController implements UsersApi {
         this.service = service;
     }
 
-    public ResponseEntity<Void> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "NewUser body", required=true, schema=@Schema()) @Valid @RequestBody CreateUserDTO body) {
-        service.createUser(body);
-        return new ResponseEntity<Void>(HttpStatus.OK);
+    public ResponseEntity<User> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "New user body", required=true, schema=@Schema()) @Valid @RequestBody CreateUserDTO body) {
+        User u = service.createUser(body);
+        return ResponseEntity.status(HttpStatus.OK).body(u);
     }
 
-//    public ResponseEntity<Void> lockUserByEmail(@Parameter(in = ParameterIn.QUERY, description = "the email", required=true, schema=@Schema()) @Valid @RequestParam(value = "email", required = true) String email) {
-//        service.lockUserByEmail(email);
-//        return new ResponseEntity<Void>(HttpStatus.OK);
-//    }
-
-    public ResponseEntity<Void> lockUserById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Long id) {
-        service.lockUserById(id);
-        return new ResponseEntity<Void>(HttpStatus.OK);
+    public ResponseEntity<User> lockUserById(@Parameter(in = ParameterIn.PATH, description = "The userID", required=true, schema=@Schema()) @PathVariable("id") Long id) {
+        User u = service.lockUserById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(u);
     }
 
-    public ResponseEntity<Void> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "The new user information", required=true, schema=@Schema()) @Valid @RequestBody User body) {
-        service.updateUser(body);
-        return new ResponseEntity<Void>(HttpStatus.OK);
+    public ResponseEntity<User> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "The new user information", required=true, schema=@Schema()) @Valid @RequestBody User body) {
+        User u = service.updateUser(body);
+        return ResponseEntity.status(HttpStatus.OK).body(u);
     }
 
-    public ResponseEntity<List<User>> getUsers(@Parameter(in = ParameterIn.QUERY, description = "Search a user by a string" ,schema=@Schema()) @Valid @RequestParam(value = "searchstring", required = false) String searchstring) throws IOException {
+    public ResponseEntity<List<User>> getUsers(@Parameter(in = ParameterIn.QUERY, description = "Search a user by a string maching a username, firstname, lastname or email" ,schema=@Schema()) @Valid @RequestParam(value = "searchstring", required = false) String searchstring) throws IOException {
         List<User> users = service.getUsers(searchstring);
+        //TODO: efficient maken
         for (User u: users) {
             u.setPassword("SECRET");
         }
+
         if (users.toArray().length != 0){
             return ResponseEntity.status(HttpStatus.OK).body(users);
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(users);
     }
-//    public ResponseEntity<User> userByEmail(@Parameter(in = ParameterIn.QUERY, description = "the userEmail", required=true, schema=@Schema()) @Valid @RequestParam(value = "email", required = true) String email) throws IOException {
-//        User user = service.userByEmail(email);
-//        return ResponseEntity.status(HttpStatus.OK).body(user);
-//    }
 
     public ResponseEntity<User> userById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Long id) throws IOException {
         User user = service.userById(id);
