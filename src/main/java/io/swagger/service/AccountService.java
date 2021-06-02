@@ -25,20 +25,20 @@ public class AccountService {
     public AccountService() {
     }
 
-//    public void updateBalance(double amount, String iban){
-//        if(accountRepository.existsByiban(iban)){
-//            Account account = accountRepository.findOneByIban(iban);
-//
-//            double balance = account.getBalance();
-//            double newBalance = balance + amount;
-//            account.setBalance(newBalance);
-//
-//            accountRepository.save(account);
-//        }else
-//        {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No Account found for this iban");
-//        }
-//   }
+    public void updateBalance(double amount, String iban){
+        if(accountRepository.existsByiban(iban)){
+            Account account = accountRepository.findOneByIban(iban);
+
+            double balance = account.getBalance();
+            double newBalance = balance + amount;
+            account.setBalance(newBalance);
+
+           accountRepository.save(account);
+        }else
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No Account found for this iban");
+        }
+   }
 
     public String generateIban(){
         boolean unique = false;
