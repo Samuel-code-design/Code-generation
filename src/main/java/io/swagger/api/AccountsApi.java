@@ -62,12 +62,10 @@ public interface AccountsApi {
     @RequestMapping(value = "/accounts",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<Account>> allAccounts(@Min(0)@Parameter(in = ParameterIn.QUERY, description = "number of accounts to skip for pagination" ,schema=@Schema(allowableValues={  }
-)) @Valid @RequestParam(value = "skip", required = false) Integer skip, @Min(0) @Max(100) @Parameter(in = ParameterIn.QUERY, description = "maximum number of accounts to return" ,schema=@Schema(allowableValues={  }, maximum="100"
-)) @Valid @RequestParam(value = "limit", required = false) Integer limit);
+    ResponseEntity<List<Account>> allAccounts();
 
 
-    @Operation(summary = "Finds accounts by Iban", description = "", security = {
+    @Operation(summary = "Finds account by Iban", description = "", security = {
         @SecurityRequirement(name = "bearerAuth")    }, tags={ "Employee" })
     @ApiResponses(value = { 
         @ApiResponse(responseCode = "200", description = "Account(s) found", content = @Content(array = @ArraySchema(schema = @Schema(implementation = Account.class)))),
@@ -80,7 +78,7 @@ public interface AccountsApi {
     @RequestMapping(value = "/iban/{iban}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<Account>> findAccountsByIban(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("iban") String iban);
+    ResponseEntity<Account> findAccountByIban(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("iban") String iban);
 
 
     @Operation(summary = "Finds accounts by User Id", description = "", security = {

@@ -6,6 +6,7 @@ import io.swagger.repository.AccountRepository;
 import io.swagger.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -24,27 +25,33 @@ public class AccountService {
     public AccountService() {
     }
 
-//    public void updateBalance(double amount, Account account){
-//        double balance = account.getBalance();
-//        double newbalance = balance + amount;
-//        account.setBalance(newbalance);
+//    public void updateBalance(double amount, String iban){
+//        if(accountRepository.existsByiban(iban)){
+//            Account account = accountRepository.findOneByIban(iban);
 //
-//        accountRepository.save(account);
-//    }
+//            double balance = account.getBalance();
+//            double newBalance = balance + amount;
+//            account.setBalance(newBalance);
+//
+//            accountRepository.save(account);
+//        }else
+//        {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No Account found for this iban");
+//        }
+//   }
 
     public String generateIban(){
         boolean unique = false;
         String newIban = "";
-        while(!unique){
+        while (!unique) {
             //NLxxINHO0xxxxxxxxx
             Random rand = new Random();
             int max = 9;
             StringBuilder ibanStringbuilder = new StringBuilder("NL");
-            for(int i = 0; i < 11; i++)
-            {
+            for (int i = 0; i < 11; i++) {
                 int randomNumber = rand.nextInt(max);
                 ibanStringbuilder.append(randomNumber);
-                if(i == 1){
+                if (i == 1) {
                     ibanStringbuilder.append("INHO0");
                 }
             }
@@ -55,14 +62,25 @@ public class AccountService {
         }
 
         return newIban;
+        //throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not generate Iban");
     }
 
-    public List<Account> getAccountsByIban(String iban){return accountRepository.findByIban(iban);}
-
-    public Account getAccountByIban(String iban){return accountRepository.findOneByIban(iban);}
+    public Account getAccountByIban(String iban){
+        if(accountRepository.existsByiban(iban)){
+            return accountRepository.findOneByIban(iban);
+        }else{
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No account found for this iban");
+        }
+    }
 
     public List<Account> getAccountsByUserId(Long userId){
-        return accountRepository.findByUserId(userId);
+        if(!userRepository.existsByid(userId)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with this id");
+        }else if(!accountRepository.existsByuserId(userId)){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No accounts found for this user");
+        }else{
+            return accountRepository.findByUserId(userId);
+        }
     }
 
     public List<Account> getAllAccounts(){
@@ -90,11 +108,19 @@ public class AccountService {
             account.setLocked(acc.getLocked()); account.setUserId(acc.getUserId());
             accountRepository.save(account);
         }else{
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "User Id doesn't exist");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no user for this UserId");
         }
-
     }
 
+    public void lockAccountByIban(String iban){
+        if(accountRepository.existsByiban(iban)){
+            Account acc = accountRepository.findOneByIban(iban);
+            acc.setLocked(true);
+        }
+        else{
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No account found for this Iban");
+        }
+    }
 
 
 }
