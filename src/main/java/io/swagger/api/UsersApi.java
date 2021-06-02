@@ -102,10 +102,10 @@ public interface UsersApi {
             produces = { "application/json" },
             consumes = { "application/json" },
             method = RequestMethod.PUT)
-    ResponseEntity<User> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody User body);
+    ResponseEntity<User> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody CreateUserDTO body);
 
 
-    @Operation(summary = "get all the users", description = "Returns a list of Users.", security = {
+    @Operation(summary = "get users", description = "Returns a list of Users.", security = {
             @SecurityRequirement(name = "bearerAuth")    }, tags={ "Employee" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "the Users", content = @Content(array = @ArraySchema(schema = @Schema(implementation = User.class)))),
@@ -116,7 +116,7 @@ public interface UsersApi {
     @RequestMapping(value = "/users",
             produces = { "application/json" },
             method = RequestMethod.GET)
-    ResponseEntity<List<User>> getUsers(@Parameter(in = ParameterIn.QUERY, description = "Search a user by a string" ,schema=@Schema()) @Valid @RequestParam(value = "searchstring", required = false) String searchstring) throws IOException;
+    ResponseEntity<List<User>> getUsers(@Parameter(in = ParameterIn.QUERY, description = "Search a user by a string maching a username, firstname, lastname or email" ,schema=@Schema()) @Valid @RequestParam(value = "searchstring", required = false) String searchstring) throws IOException;
 
 //    @Operation(summary = "get a user by it's email", description = "Returns a user with specified email", security = {
 //        @SecurityRequirement(name = "bearerAuth")    }, tags={ "Employee" })
@@ -149,7 +149,7 @@ public interface UsersApi {
 //    ResponseEntity<User> userByEmail(@Parameter(in = ParameterIn.QUERY, description = "the userEmail", schema=@Schema()) @Valid @RequestParam(value = "email", required = true) String email) throws IOException;
 
 
-    @Operation(summary = "get a user by it's id", description = "Returns a user with specified id", security = {
+    @Operation(summary = "get a user by id", description = "Returns a user with specified id", security = {
             @SecurityRequirement(name = "bearerAuth")    }, tags={ "Employee" })
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "the User", content = @Content(array = @ArraySchema(schema = @Schema(implementation = User.class)))),

@@ -16,5 +16,6 @@ public interface EmployeeRepository extends JpaRepository<User, Long> {
     boolean existsByPhone(String phone);
 
     User findByIdEquals(Long id);
+    User findByUsernameEquals(String username);
 
 }

@@ -46,17 +46,17 @@ public class UsersApiController implements UsersApi {
         return ResponseEntity.status(HttpStatus.OK).body(u);
     }
 
-    public ResponseEntity<User> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "The new user information", required=true, schema=@Schema()) @Valid @RequestBody User body) {
+    public ResponseEntity<User> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "The new user information", required=true, schema=@Schema()) @Valid @RequestBody CreateUserDTO body) {
         User u = service.updateUser(body);
         return ResponseEntity.status(HttpStatus.OK).body(u);
     }
 
-    public ResponseEntity<List<User>> getUsers(@Parameter(in = ParameterIn.QUERY, description = "Search a user by a string maching a username, firstname, lastname or email" ,schema=@Schema()) @Valid @RequestParam(value = "searchstring", required = false) String searchstring) throws IOException {
+    public ResponseEntity<List<User>> getUsers(@Parameter(in = ParameterIn.QUERY, description = "Search a user by a string" ,schema=@Schema()) @Valid @RequestParam(value = "searchstring", required = false) String searchstring) throws IOException {
         List<User> users = service.getUsers(searchstring);
-        //TODO: efficient maken
-        for (User u: users) {
-            u.setPassword("SECRET");
-        }
+//        //TODO: efficient maken
+//        for (User u: users) {
+//            u.setPassword("SECRET");
+//        }
 
         if (users.toArray().length != 0){
             return ResponseEntity.status(HttpStatus.OK).body(users);
@@ -66,7 +66,7 @@ public class UsersApiController implements UsersApi {
 
     public ResponseEntity<User> userById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Long id) throws IOException {
         User user = service.userById(id);
-        user.setPassword("SECRET");
+//        user.setPassword("SECRET");
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 }

@@ -1,8 +1,9 @@
 package io.swagger.service;
+
 import io.swagger.model.Account;
 import io.swagger.model.Role;
-import io.swagger.model.dto.CreateUserDTO;
 import io.swagger.model.User;
+import io.swagger.model.dto.CreateUserDTO;
 import io.swagger.repository.AccountRepository;
 import io.swagger.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,40 +86,82 @@ public class EmployeeService {
 
     public User lockUserById(Long id) {
         User u = userById(id);
-        u.setLocked(true);
-        return repository.save(u);
+        if (u.getLocked().equals(true)) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "User is already locked");
+        } else {
+            u.setLocked(true);
+            return repository.save(u);
+        }
     }
 
-    public User updateUser(User body) {
-        //Moet dit wel zo??
+    public User updateUser(CreateUserDTO body) {
         // als je een username update kan je dan nog inloggen?
         // wat als de user alleen zijn daylimit wil update?
+        String uname = body.getUsername();
 
-        if (repository.existsByUsername(body.getUsername())){
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
-                    "Username is already in use choose a different one");
+        //TODO: in 1 zin?
+        //check if the user exists
+        if (repository.findByUsernameEquals(uname) != null){
+            User u = repository.findByUsernameEquals(uname);
+
+
+//            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+//                    "Username is already in use choose a different one");
         }
         //encode the password
         body.setPassword(passwordEncoder.encode(body.getPassword()));
-        return repository.save(body);
+        return repository.save(createUserFromDTO(body));
     }
 
     public List<User> getUsers(String searchString) {
         if (searchString != null && !searchString.equals("")){
-            return repository.findByEmailContainsOrUsernameContainsOrFirstNameContainsOrLastNameContaining
+            List<User> users =  repository.findByEmailContainsOrUsernameContainsOrFirstNameContainsOrLastNameContaining
                     (searchString, searchString, searchString, searchString);
+            if (users.toArray().length == 0){
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                        "No user found");
+            }
+            return users;
+        } else{
+            List<User> u = repository.findAll();
+            if(u.toArray().length == 0){
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                        "There are no users");
+            }
+            return repository.findAll();
         }
-        return repository.findAll();
     }
 
     public User userById(Long id) {
-        try {
-            return repository.findByIdEquals(id);
+        User u = repository.findByIdEquals(id);
+        if (u == null) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "User does not exist");
         }
-        catch (ResponseStatusException e){
-            throw new ResponseStatusException(HttpStatus.NO_CONTENT,
-                    "Username is already in use choose a different one");
-        }
+        return u;
+    }
+
+    public User createUserFromDTO(CreateUserDTO body){
+        Long DAY_LIMIT = 1000L;
+        Long TRANSACTION_LIMIT = 1000L;
+
+        User user = new User();
+        user.setId(null);
+        user.setLocked(false);
+        user.setDayLimit(DAY_LIMIT);
+        user.setTransactionLimit(TRANSACTION_LIMIT);
+
+        user.setEmail(body.getEmail());
+        user.setUsername(body.getUsername());
+        user.setFirstName(body.getFirstName());
+        user.setLastName(body.getLastName());
+        user.setPhone(body.getPhone());
+        user.setRoles(body.getRole());
+
+        //encode the password
+        user.setPassword(passwordEncoder.encode(body.getPassword()));
+        return  user;
     }
 
     public void generateAccountForUser(User u){

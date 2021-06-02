@@ -3,7 +3,10 @@ package io.swagger.model.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.model.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.boot.SpringApplication;
 
+import javax.persistence.ElementCollection;
+import javax.persistence.FetchType;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -15,6 +18,12 @@ public class CreateUserDTO {
     private String lastName;
     private String email;
     private String phone;
+    private Long dayLimit;
+    private Long transactionLimit;
+
+
+
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<Role> roles;
 
     public CreateUserDTO(String username, String password, String firstName, String lastName, String email, String phone, List<Role> roles) {
@@ -99,5 +108,25 @@ public class CreateUserDTO {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    @Schema(example = "1000", description = "")
+
+    public Long getDayLimit() {
+        return dayLimit;
+    }
+
+    public void setDayLimit(Long dayLimit) {
+        this.dayLimit = dayLimit;
+    }
+
+    @Schema(example = "1000", description = "")
+
+    public Long getTransactionLimit() {
+        return transactionLimit;
+    }
+
+    public void setTransactionLimit(Long transactionLimit) {
+        this.transactionLimit = transactionLimit;
     }
 }
