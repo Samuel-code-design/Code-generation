@@ -42,8 +42,8 @@ public class AccountsApiController implements AccountsApi {
 
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity addAccount(@Parameter(in = ParameterIn.DEFAULT, description = "account", required=true, schema=@Schema()) @Valid @RequestBody AccountDTO acc) {
-        accountService.addAccount(acc);
-        return ResponseEntity.status(HttpStatus.CREATED).body(acc);
+        Account account = accountService.addAccount(acc);
+        return ResponseEntity.status(HttpStatus.CREATED).body(account);
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -73,8 +73,8 @@ public class AccountsApiController implements AccountsApi {
 
     @RequestMapping(method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity updateAccount(@Parameter(in = ParameterIn.DEFAULT, description = "account", required=true, schema=@Schema()) @Valid @RequestBody Account body) {
-        accountService.updateAccount(body);
-        return ResponseEntity.status(HttpStatus.CREATED).body(body.getIban());
+        Account acc = accountService.updateAccount(body);
+        return ResponseEntity.status(HttpStatus.CREATED).body(acc);
     }
 
 }

@@ -87,26 +87,30 @@ public class AccountService {
         return (List<Account>) accountRepository.findAll();
     }
 
-    public void updateAccount(Account account){
+    public Account updateAccount(Account account){
         Account acc = getAccountByIban(account.getIban());
 
         acc.setAbsoluteLimit(account.getAbsoluteLimit());
         acc.setType(account.getType());
         acc.setBalance(account.getBalance());
         acc.setLocked(account.getLocked());
+        acc.setUserId(account.getUserId());
         accountRepository.save(account);
+        return acc;
     }
 
-    public void addAccount(AccountDTO acc){
+    public Account addAccount(AccountDTO acc){
         if(userRepository.existsByid(acc.getUserId())){
             String iban = generateIban();
             Account account = new Account();
             account.setIban(iban);
             account.setAbsoluteLimit(acc.getAbsoluteLimit());
             account.setType(acc.getType());
-            account.setBalance(acc.getBalance());
-            account.setLocked(acc.getLocked()); account.setUserId(acc.getUserId());
+            account.setBalance(0.00);
+            account.setLocked(acc.getLocked());
+            account.setUserId(acc.getUserId());
             accountRepository.save(account);
+            return account;
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no user for this UserId");
         }

@@ -12,9 +12,6 @@ public class AccountDTO {
     @JsonProperty("type")
     private AccountType type;
 
-    @JsonProperty("balance")
-    private Double balance;
-
     @JsonProperty("absoluteLimit")
     private Double absoluteLimit;
 
@@ -24,9 +21,8 @@ public class AccountDTO {
     @JsonProperty("userId")
     private Long userId;
 
-    public AccountDTO(AccountType type, Double balance, Double absoluteLimit, Boolean locked, Long userId) {
+    public AccountDTO(AccountType type, Double absoluteLimit, Boolean locked, Long userId) {
         this.type = type;
-        this.balance = balance;
         this.absoluteLimit = absoluteLimit;
         this.locked = locked;
         this.userId = userId;
@@ -38,12 +34,7 @@ public class AccountDTO {
 
     public void setType(AccountType type) { this.type = type; }
 
-    @Schema(example = "100", description = "")
-    public Double getBalance() { return balance; }
-
-    public void setBalance(Double balance) { this.balance = balance; }
-
-    @Schema(example = "100", description = "")
+    @Schema(example = "500", description = "")
     public Double getAbsoluteLimit() { return absoluteLimit; }
 
     public void setAbsoluteLimit(Double absoluteLimit) { this.absoluteLimit = absoluteLimit; }
