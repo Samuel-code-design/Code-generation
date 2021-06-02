@@ -75,7 +75,7 @@ public interface AccountsApi {
         @ApiResponse(responseCode = "401", description = "Authorization failed"),
         
         @ApiResponse(responseCode = "404", description = "Account not found") })
-    @RequestMapping(value = "/iban/{iban}",
+    @RequestMapping(value = "/account/{iban}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
     ResponseEntity<Account> findAccountByIban(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("iban") String iban);
@@ -91,7 +91,7 @@ public interface AccountsApi {
         @ApiResponse(responseCode = "401", description = "Authorization failed"),
         
         @ApiResponse(responseCode = "404", description = "Account not found") })
-    @RequestMapping(value = "/userId/{userId}",
+    @RequestMapping(value = "/accounts/{userId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
     ResponseEntity<List<Account>> findAccountsByUserId(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("userId") Long userId);
@@ -107,9 +107,10 @@ public interface AccountsApi {
         @ApiResponse(responseCode = "401", description = "Authorization failed"),
         
         @ApiResponse(responseCode = "404", description = "Account not found") })
-    @RequestMapping(value = "/lock/{iban}",
+    @RequestMapping(value = "/accounts/{iban}",
+            produces = { "application/json" },
             method = RequestMethod.PUT)
-    ResponseEntity<Void> lockAccount(@Parameter(in = ParameterIn.PATH, description = "iban to lock", required=true, schema=@Schema()) @PathVariable("iban") String iban, @Parameter(in = ParameterIn.HEADER, description = "" ,schema=@Schema()) @RequestHeader(value="api_key", required=false) String apiKey);
+    ResponseEntity<Void> lockAccount(@Parameter(in = ParameterIn.PATH, description = "iban to lock", required=true, schema=@Schema()) @PathVariable("iban") String iban);
 
 
     @Operation(summary = "Update an account", description = "", security = {

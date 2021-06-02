@@ -116,15 +116,15 @@ public class AccountService {
         }
     }
 
-    public void lockAccountByIban(String iban){
+    public Account lockAccountByIban(String iban){
         if(accountRepository.existsByiban(iban)){
             Account acc = accountRepository.findOneByIban(iban);
             acc.setLocked(true);
+            accountRepository.save(acc);
+            return acc;
         }
         else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No account found for this Iban");
         }
     }
-
-
 }
