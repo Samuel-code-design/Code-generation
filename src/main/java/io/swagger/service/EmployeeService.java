@@ -3,7 +3,6 @@ package io.swagger.service;
 import io.swagger.model.Role;
 import io.swagger.model.User;
 import io.swagger.model.dto.CreateUserDTO;
-import io.swagger.repository.AccountRepository;
 import io.swagger.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,21 +15,15 @@ import java.util.List;
 
 @Service
 public class EmployeeService {
-    //TODO: messages werken niet
-    //todo: responses Httpstatus 200 message (wanneer het goed gaat)
-
-    //TODO: ook savings account aanmaken?
     private final UserRepository repository;
-    private final AccountRepository accountRepository;
     private final AccountService accountService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public EmployeeService(UserRepository repository, AccountRepository accountRepository, AccountService accountService) {
+    public EmployeeService(UserRepository repository, AccountService accountService) {
         this.repository = repository;
-        this.accountRepository = accountRepository;
         this.accountService = accountService;
     }
 
