@@ -46,7 +46,7 @@ public class UsersApiController implements UsersApi {
         return ResponseEntity.status(HttpStatus.OK).body(u);
     }
 
-    public ResponseEntity<User> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "The new user information", required=true, schema=@Schema()) @Valid @RequestBody CreateUserDTO body) {
+    public ResponseEntity<User> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "The new user information", required=true, schema=@Schema()) @Valid @RequestBody User body) {
         User u = service.updateUser(body);
         return ResponseEntity.status(HttpStatus.OK).body(u);
     }

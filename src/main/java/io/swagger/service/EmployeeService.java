@@ -38,9 +38,6 @@ public class EmployeeService {
     }
 
     public User createUser(CreateUserDTO body){
-        //some standard values
-        Long DAY_LIMIT = 1000L;
-        Long TRANSACTION_LIMIT = 1000L;
         int MINIMUM_PASSWORD_LENGTH = 6;
 
         //check if the user is valid
@@ -58,21 +55,7 @@ public class EmployeeService {
                     "Password is too short, choose a longer one and try again");
         }
         //make the user
-        User user = new User();
-        user.setId(null);
-        user.setLocked(false);
-        user.setDayLimit(DAY_LIMIT);
-        user.setTransactionLimit(TRANSACTION_LIMIT);
-
-        user.setEmail(body.getEmail());
-        user.setUsername(body.getUsername());
-        user.setFirstName(body.getFirstName());
-        user.setLastName(body.getLastName());
-        user.setPhone(body.getPhone());
-        user.setRoles(body.getRole());
-
-        //encode the password
-        user.setPassword(passwordEncoder.encode(body.getPassword()));
+        User user = createUserFromDTO(body);
 
         //check if new user is also a customer
         if (body.getRole().contains(Role.ROLE_CUSTOMER)){
@@ -95,35 +78,62 @@ public class EmployeeService {
         }
     }
 
-    public User updateUser(CreateUserDTO body) {
-        // als je een username update kan je dan nog inloggen?
-        // wat als de user alleen zijn daylimit wil update?
-        String uname = body.getUsername();
+    public User updateUser(User body) {
+        //get the user with the given id
+        User u = repository.findByIdEquals(body.getId());
 
-        //TODO: in 1 zin?
         //check if the user exists
-        if (repository.findByUsernameEquals(uname) != null){
-            User u = repository.findByUsernameEquals(uname);
+        if (u != null) {
 
+            //check if username is being changed
+            if (!u.getUsername().equals(body.getUsername())){
+                //check if another user is using this username
+                if (repository.existsByUsername(body.getUsername())){
+                    throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                            "Username is already in use by a different user");
+                }
+            }
+            //check if email is being changed
+            else if (!u.getEmail().equals(body.getEmail())){
+                //check if another user is using this email
+                if (repository.existsByEmail(body.getEmail())){
+                    throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                            "Email is already in use by a different user");
+                }
+            }
+            //check if phone is being changed
+            else if (!u.getPhone().equals(body.getPhone())){
+                //check if another user is using this phone
+                if (repository.existsByPhone(body.getPhone())){
+                    throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                            "Phone is already in use by a different user");
+                }
+            }
 
-//            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
-//                    "Username is already in use choose a different one");
+            //encode the password
+            body.setPassword(passwordEncoder.encode(body.getPassword()));
+            return repository.save(body);
         }
-        //encode the password
-        body.setPassword(passwordEncoder.encode(body.getPassword()));
-        return repository.save(createUserFromDTO(body));
+        else {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "User with this id does not exist");
+        }
     }
 
     public List<User> getUsers(String searchString) {
+        //check if the field is not empty
         if (searchString != null && !searchString.equals("")){
             List<User> users =  repository.findByEmailContainsOrUsernameContainsOrFirstNameContainsOrLastNameContaining
                     (searchString, searchString, searchString, searchString);
+
+            //check if a user was found
             if (users.toArray().length == 0){
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                         "No user found");
             }
             return users;
-        } else{
+        }
+        else{
             List<User> u = repository.findAll();
             if(u.toArray().length == 0){
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
@@ -137,7 +147,7 @@ public class EmployeeService {
         User u = repository.findByIdEquals(id);
         if (u == null) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
-                    "User does not exist");
+                    "No User with this id");
         }
         return u;
     }
