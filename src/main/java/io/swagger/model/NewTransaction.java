@@ -9,7 +9,9 @@ import java.math.BigDecimal;
 import org.threeten.bp.OffsetDateTime;
 import org.springframework.validation.annotation.Validated;
 
+import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
@@ -28,12 +30,15 @@ public class NewTransaction   {
   private LocalDateTime timestamp = null;
 
   @JsonProperty("accountFrom")
+  @ManyToOne(targetEntity = Account.class)
   private String accountFrom = null;
 
   @JsonProperty("accountTo")
+  @ManyToOne(targetEntity = Account.class)
   private String accountTo = null;
 
   @JsonProperty("performingUser")
+  @ManyToOne(targetEntity = User.class)
   private Long performingUser = null;
 
   public NewTransaction amount(Long amount) {
