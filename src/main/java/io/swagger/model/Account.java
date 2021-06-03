@@ -22,8 +22,8 @@ import javax.validation.constraints.*;
 @Entity
 public class Account   {
   @JsonProperty("iban")
-  @Id
-  private String iban = null;
+  @Id  private String iban = null;
+
 
   /**
    * Account type

@@ -15,6 +15,9 @@ public class AccountService {
 
     public AccountService() {
     }
+    public String generateIban(){
+        return "NL01INHO0000000001";
+    }
 
     public void updateBalance(double amount, Account account){
         double balance = account.getBalance();
