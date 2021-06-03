@@ -128,15 +128,8 @@ public class AccountService {
     public AccountResponseDTO addAccount(AccountCreateDTO acc){
         if(userRepository.existsByid(acc.getUserId())){
             String iban = generateIban();
-            Account account = new Account();
-            account.setIban(iban);
-            account.setAbsoluteLimit(acc.getAbsoluteLimit());
-            account.setType(acc.getType());
-            account.setBalance(0.00);
-            account.setLocked(acc.getLocked());
-            //set user
             User u = userRepository.findByIdEquals(acc.getUserId());
-            account.setUser(u);
+            Account account = new Account(iban, acc.getType(),0.00, acc.getAbsoluteLimit(), acc.getLocked(),u);
             accountRepository.save(account);
             return accountToResponseDTO(account);
         }else{
@@ -157,15 +150,7 @@ public class AccountService {
     }
 
         public void generateCurrentAccountForUser(User u){
-        Double ABSOLUTE_LIMIT = 0.0;
-        Account acc = new Account();
-
-        acc.setUser(u);
-        acc.setBalance(0.0);
-        acc.setAbsoluteLimit(ABSOLUTE_LIMIT);
-        acc.setIban(generateIban());
-        acc.locked(false);
-        acc.type(AccountType.CURRENT);
-        accountRepository.save(acc);
+        AccountCreateDTO acc = new AccountCreateDTO(AccountType.CURRENT,0.0,false, u.getId());
+        addAccount(acc);
     }
 }
