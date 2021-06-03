@@ -48,6 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(AUTH_WHITELIST).permitAll()
                 .antMatchers("/Accounts/**").hasRole("EMPLOYEE")
                 .antMatchers("/users/**").hasRole("EMPLOYEE")
+                .antMatchers("/Accounts/userId/**").hasAnyRole("CUSTOMER", "EMPLOYEE")
                 .anyRequest().authenticated();
     }
 

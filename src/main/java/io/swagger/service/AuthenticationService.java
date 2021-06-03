@@ -1,7 +1,9 @@
 package io.swagger.service;
 
+import io.swagger.model.AccountType;
 import io.swagger.model.Role;
 import io.swagger.model.User;
+import io.swagger.model.dto.AccountCreateDTO;
 import io.swagger.repository.UserRepository;
 import io.swagger.security.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.Arrays;
 
 @Service
-public class UserService {
+public class AuthenticationService {
 
     @Autowired
     private UserRepository userRepository;
@@ -26,6 +28,9 @@ public class UserService {
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private AccountService accountService;
 
     private int MINIMUM_PASSWORD_LENGTH = 6;
 
@@ -51,6 +56,8 @@ public class UserService {
                     user.setTransactionLimit(100L);
                     user.setRoles(Arrays.asList(Role.ROLE_CUSTOMER));
                     userRepository.save(user);
+                    AccountCreateDTO accountCreateDTO = new AccountCreateDTO(AccountType.SAVING,  0.00, false, user.getId());
+                    accountService.addAccount(accountCreateDTO);
                     return "Account created, you can login now.";
                 } else {
                     throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Password length to short, minimum length 7.");

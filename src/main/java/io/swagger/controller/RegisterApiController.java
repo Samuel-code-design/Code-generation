@@ -1,11 +1,14 @@
-package io.swagger.api;
+package io.swagger.controller;
 
+import io.swagger.api.RegisterApi;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.model.dto.LoginDTO;
-import io.swagger.service.UserService;
+import io.swagger.model.User;
+import io.swagger.model.dto.RegisterDTO;
+import io.swagger.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,26 +22,29 @@ import javax.servlet.http.HttpServletRequest;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-05-17T12:11:50.256Z[GMT]")
 @RestController
-public class LoginApiController implements LoginApi {
+public class RegisterApiController implements RegisterApi {
 
-    private static final Logger log = LoggerFactory.getLogger(LoginApiController.class);
+    private static final Logger log = LoggerFactory.getLogger(RegisterApiController.class);
 
     private final ObjectMapper objectMapper;
 
     private final HttpServletRequest request;
 
     @Autowired
-    private UserService userService;
+    private ModelMapper modelMapper;
+
+    @Autowired
+    private AuthenticationService authenticationService;
 
     @org.springframework.beans.factory.annotation.Autowired
-    public LoginApiController(ObjectMapper objectMapper, HttpServletRequest request) {
+    public RegisterApiController(ObjectMapper objectMapper, HttpServletRequest request) {
         this.objectMapper = objectMapper;
         this.request = request;
     }
 
-    public ResponseEntity<String> loginUser(@Parameter(in = ParameterIn.DEFAULT, description = "", schema=@Schema()) @Valid @RequestBody LoginDTO body) {
-        String token = userService.login(body.getUsername(), body.getPassword());
-        return new ResponseEntity<String>(token, HttpStatus.OK);
+    public ResponseEntity<String> registerUser(@Parameter(in = ParameterIn.DEFAULT, description = "register customer user", schema=@Schema()) @Valid @RequestBody RegisterDTO body) {
+        String message = authenticationService.signup(modelMapper.map(body, User.class));
+        return new ResponseEntity<String>(message, HttpStatus.OK);
     }
 
 }

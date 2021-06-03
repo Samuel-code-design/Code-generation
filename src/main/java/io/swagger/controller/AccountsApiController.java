@@ -1,6 +1,6 @@
-package io.swagger.api;
+package io.swagger.controller;
 
-import io.swagger.model.Account;
+import io.swagger.api.AccountsApi;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.model.dto.AccountCreateDTO;
 import io.swagger.model.dto.AccountResponseDTO;

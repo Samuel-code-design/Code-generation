@@ -1,18 +1,16 @@
 package io.swagger.service;
 
-import io.swagger.model.Account;
 import io.swagger.model.Role;
 import io.swagger.model.User;
 import io.swagger.model.dto.CreateUserDTO;
 import io.swagger.repository.AccountRepository;
-import io.swagger.repository.EmployeeRepository;
+import io.swagger.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -22,16 +20,15 @@ public class EmployeeService {
     //todo: responses Httpstatus 200 message (wanneer het goed gaat)
 
     //TODO: ook savings account aanmaken?
-    private final EmployeeRepository repository;
+    private final UserRepository repository;
     private final AccountRepository accountRepository;
     private final AccountService accountService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
     @Autowired
-    public EmployeeService(EmployeeRepository repository, AccountRepository accountRepository, AccountService accountService) {
+    public EmployeeService(UserRepository repository, AccountRepository accountRepository, AccountService accountService) {
         this.repository = repository;
         this.accountRepository = accountRepository;
         this.accountService = accountService;

@@ -7,7 +7,7 @@ import io.swagger.model.dto.AccountCreateDTO;
 import io.swagger.model.dto.AccountResponseDTO;
 import io.swagger.model.dto.AccountUpdateDTO;
 import io.swagger.repository.AccountRepository;
-import io.swagger.repository.EmployeeRepository;
+import io.swagger.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,7 @@ public class AccountService {
     private AccountRepository accountRepository;
 
     @Autowired
-    private EmployeeRepository userRepository;
+    private UserRepository userRepository;
 
     public AccountService() {
     }
