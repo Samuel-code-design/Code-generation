@@ -27,6 +27,8 @@ public class UserService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
+    private int MINIMUM_PASSWORD_LENGTH = 6;
+
     public String login(String username, String password){
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
@@ -37,17 +39,24 @@ public class UserService {
 
     }
 
-    public User signup(User user) {
+    public String signup(User user) {
         if (!userRepository.existsByUsername(user.getUsername())) {
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            user.setDayLimit(1000L);
-            user.setTransactionLimit(100L);
-            user.setRoles(Arrays.asList(Role.ROLE_CUSTOMER));
-            userRepository.save(user);
-            return user;
+            if (!userRepository.existsByEmail(user.getEmail())){
+                if (user.getPassword().length() > MINIMUM_PASSWORD_LENGTH){
+                    user.setPassword(passwordEncoder.encode(user.getPassword()));
+                    user.setDayLimit(1000L);
+                    user.setTransactionLimit(100L);
+                    user.setRoles(Arrays.asList(Role.ROLE_CUSTOMER));
+                    userRepository.save(user);
+                    return "Account created, you can login now.";
+                } else {
+                    throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Password length to short, minimum length 7.");
+                }
+            } else {
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Email already in use, please try again nd choose a different one");
+            }
         } else {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Username is already in use, , please try again and choose a different one");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Username is already in use, please try again and choose a different one");
         }
     }
-
 }
