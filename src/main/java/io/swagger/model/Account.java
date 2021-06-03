@@ -22,8 +22,8 @@ import javax.validation.constraints.*;
 @Entity
 public class Account   {
   @JsonProperty("iban")
-  @Id
-  private String iban = null;
+  @Id  private String iban = null;
+
 
   /**
    * Account type
@@ -62,7 +62,7 @@ public class Account   {
   private Double balance = null;
 
   @JsonProperty("absoluteLimit")
-  private BigDecimal absoluteLimit = null;
+  private Double absoluteLimit = null;
 
   @JsonProperty("locked")
   private Boolean locked = null;
@@ -131,7 +131,7 @@ public class Account   {
     this.balance = balance;
   }
 
-  public Account absoluteLimit(BigDecimal absoluteLimit) {
+  public Account absoluteLimit(Double absoluteLimit) {
     this.absoluteLimit = absoluteLimit;
     return this;
   }
@@ -144,11 +144,11 @@ public class Account   {
       @NotNull
 
     @Valid
-    public BigDecimal getAbsoluteLimit() {
+    public Double getAbsoluteLimit() {
     return absoluteLimit;
   }
 
-  public void setAbsoluteLimit(BigDecimal absoluteLimit) {
+  public void setAbsoluteLimit(Double absoluteLimit) {
     this.absoluteLimit = absoluteLimit;
   }
 

@@ -2,8 +2,10 @@ package io.swagger.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.model.Role;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -45,58 +47,59 @@ public class User {
 
     public User(){
     }
+    @Schema(example = "1", description = "")
+    @NotNull
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
 
+    @Schema(example = "JD0001", description = "")
     public String getUsername() {
         return username;
     }
-
     public void setUsername(String username) {
         this.username = username;
     }
 
+    @Schema(example = "Wachtwoord1#", description = "")
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
 
+    @Schema(example = "John", description = "")
     public String getFirstName() {
         return firstName;
     }
-
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
+    @Schema(example = "Doe", description = "")
     public String getLastName() {
         return lastName;
     }
-
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
+    @Schema(example = "JohnDoe@gmail.com", description = "")
     public String getEmail() {
         return email;
     }
-
     public void setEmail(String email) {
         this.email = email;
     }
 
+    @Schema(example = "06 12345678", description = "")
     public String getPhone() {
         return phone;
     }
-
     public void setPhone(String phone) {
         this.phone = phone;
     }
@@ -104,15 +107,14 @@ public class User {
     public List<Role> getRoles() {
         return roles;
     }
-
     public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 
+    @Schema(example = "false", description = "")
     public Boolean getLocked() {
         return locked;
     }
-
     public void setLocked(Boolean locked) {
         this.locked = locked;
     }
@@ -125,6 +127,8 @@ public class User {
         this.enabled = enabled;
     }
 
+    @Schema(example = "1000", description = "")
+
     public Long getDayLimit() {
         return dayLimit;
     }
@@ -132,6 +136,8 @@ public class User {
     public void setDayLimit(Long dayLimit) {
         this.dayLimit = dayLimit;
     }
+
+    @Schema(example = "1000", description = "")
 
     public Long getTransactionLimit() {
         return transactionLimit;
