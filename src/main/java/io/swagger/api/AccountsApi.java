@@ -6,7 +6,9 @@
 package io.swagger.api;
 
 import io.swagger.model.Account;
-import io.swagger.model.dto.AccountDTO;
+import io.swagger.model.dto.AccountCreateDTO;
+import io.swagger.model.dto.AccountResponseDTO;
+import io.swagger.model.dto.AccountUpdateDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -20,18 +22,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.bind.annotation.CookieValue;
 
 import javax.validation.Valid;
-import javax.validation.constraints.*;
 import java.util.List;
-import java.util.Map;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-05-17T12:11:50.256Z[GMT]")
 @Validated
@@ -48,7 +43,7 @@ public interface AccountsApi {
     @RequestMapping(value = "/accounts",
         consumes = { "application/json" }, 
         method = RequestMethod.POST)
-    ResponseEntity<Void> addAccount(@Parameter(in = ParameterIn.DEFAULT, description = "account", required=true, schema=@Schema()) @Valid @RequestBody AccountDTO body);
+    ResponseEntity addAccount(@Parameter(in = ParameterIn.DEFAULT, description = "account", required=true, schema=@Schema()) @Valid @RequestBody AccountCreateDTO body);
 
 
     @Operation(summary = "get all accounts", description = "Returns a list of Accounts.", security = {
@@ -62,7 +57,7 @@ public interface AccountsApi {
     @RequestMapping(value = "/accounts",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<Account>> allAccounts();
+    ResponseEntity<List<AccountResponseDTO>> allAccounts();
 
 
     @Operation(summary = "Finds account by Iban", description = "", security = {
@@ -78,7 +73,7 @@ public interface AccountsApi {
     @RequestMapping(value = "/account/{iban}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<Account> findAccountByIban(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("iban") String iban);
+    ResponseEntity<AccountResponseDTO> findAccountByIban(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("iban") String iban);
 
 
     @Operation(summary = "Finds accounts by User Id", description = "", security = {
@@ -94,7 +89,7 @@ public interface AccountsApi {
     @RequestMapping(value = "/accounts/{userId}",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<Account>> findAccountsByUserId(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("userId") Long userId);
+    ResponseEntity<List<AccountResponseDTO>> findAccountsByUserId(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("userId") Long userId);
 
 
     @Operation(summary = "Lock account by iban", description = "", security = {
@@ -110,7 +105,7 @@ public interface AccountsApi {
     @RequestMapping(value = "/accounts/{iban}",
             produces = { "application/json" },
             method = RequestMethod.PUT)
-    ResponseEntity<Void> lockAccount(@Parameter(in = ParameterIn.PATH, description = "iban to lock", required=true, schema=@Schema()) @PathVariable("iban") String iban);
+    ResponseEntity lockAccount(@Parameter(in = ParameterIn.PATH, description = "iban to lock", required=true, schema=@Schema()) @PathVariable("iban") String iban);
 
 
     @Operation(summary = "Update an account", description = "", security = {
@@ -128,7 +123,7 @@ public interface AccountsApi {
     @RequestMapping(value = "/accounts",
         consumes = { "application/json" }, 
         method = RequestMethod.PUT)
-    ResponseEntity<Void> updateAccount(@Parameter(in = ParameterIn.DEFAULT, description = "account", required=true, schema=@Schema()) @Valid @RequestBody Account body);
+    ResponseEntity updateAccount(@Parameter(in = ParameterIn.DEFAULT, description = "account", required=true, schema=@Schema()) @Valid @RequestBody AccountUpdateDTO body);
 
 }
 

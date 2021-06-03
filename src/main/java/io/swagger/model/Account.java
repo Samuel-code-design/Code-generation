@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
@@ -34,8 +35,9 @@ public class Account   {
   @JsonProperty("locked")
   private Boolean locked = null;
 
-  @JsonProperty("userId")
-  private Long userId = null;
+  @JsonProperty("user")
+  @ManyToOne
+  private User user = null;
 
   public Account iban(String iban) {
     this.iban = iban;
@@ -140,8 +142,8 @@ public class Account   {
     this.locked = locked;
   }
 
-  public Account userId(Long userId) {
-    this.userId = userId;
+  public Account userId(User user) {
+    this.user = user;
     return this;
   }
 
@@ -152,12 +154,12 @@ public class Account   {
   @Schema(required = true, description = "")
       @NotNull
 
-    public Long getUserId() {
-    return userId;
+    public User getUser() {
+    return user;
   }
 
-  public void setUserId(Long userId) {
-    this.userId = userId;
+  public void setUser(User user) {
+    this.user = user;
   }
 
 
@@ -175,12 +177,12 @@ public class Account   {
         Objects.equals(this.balance, account.balance) &&
         Objects.equals(this.absoluteLimit, account.absoluteLimit) &&
         Objects.equals(this.locked, account.locked) &&
-        Objects.equals(this.userId, account.userId);
+        Objects.equals(this.user, account.user);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(iban, type, balance, absoluteLimit, locked, userId);
+    return Objects.hash(iban, type, balance, absoluteLimit, locked, user);
   }
 
   @Override
@@ -193,7 +195,7 @@ public class Account   {
     sb.append("    balance: ").append(toIndentedString(balance)).append("\n");
     sb.append("    absoluteLimit: ").append(toIndentedString(absoluteLimit)).append("\n");
     sb.append("    locked: ").append(toIndentedString(locked)).append("\n");
-    sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
+    sb.append("    userId: ").append(toIndentedString(user)).append("\n");
     sb.append("}");
     return sb.toString();
   }

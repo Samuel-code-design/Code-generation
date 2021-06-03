@@ -43,4 +43,6 @@ public interface EmployeeRepository extends JpaRepository<User, Long> {
 
     User findByIdEquals(Long id);
 
+    boolean existsByid(Long id);
+
 }

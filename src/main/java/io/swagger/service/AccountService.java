@@ -1,15 +1,18 @@
 package io.swagger.service;
 
 import io.swagger.model.Account;
-import io.swagger.model.dto.AccountDTO;
+import io.swagger.model.User;
+import io.swagger.model.dto.AccountCreateDTO;
+import io.swagger.model.dto.AccountResponseDTO;
+import io.swagger.model.dto.AccountUpdateDTO;
 import io.swagger.repository.AccountRepository;
-import io.swagger.repository.UserRepository;
+import io.swagger.repository.EmployeeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -20,7 +23,7 @@ public class AccountService {
     private AccountRepository accountRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private EmployeeRepository userRepository;
 
     public AccountService() {
     }
@@ -62,44 +65,66 @@ public class AccountService {
         }
 
         return newIban;
-        //throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Could not generate Iban");
     }
 
-    public Account getAccountByIban(String iban){
+    public List<AccountResponseDTO> accountToResponseDTOList(List<Account> accounts){
+        List<AccountResponseDTO> accountList = new ArrayList<>();
+        for(Account acc : accounts){
+            AccountResponseDTO accResponse = accountToResponseDTO(acc);
+            accountList.add(accResponse);
+        }
+        return accountList;
+    }
+
+    public AccountResponseDTO accountToResponseDTO(Account acc){
+        return new AccountResponseDTO(acc.getIban(), acc.getType(), acc.getBalance(),
+                acc.getAbsoluteLimit(), acc.getLocked(), acc.getUser().getId(),
+                acc.getUser().getFirstName() + " " + acc.getUser().getLastName());
+    }
+
+
+    public AccountResponseDTO getAccountByIban(String iban){
         if(accountRepository.existsByiban(iban)){
-            return accountRepository.findOneByIban(iban);
+            Account acc =  accountRepository.findOneByIban(iban);
+            return accountToResponseDTO(acc);
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No account found for this iban");
         }
     }
 
-    public List<Account> getAccountsByUserId(Long userId){
+    public List<AccountResponseDTO> getAccountsByUserId(Long userId){
         if(!userRepository.existsByid(userId)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with this id");
         }else if(!accountRepository.existsByuserId(userId)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No accounts found for this user");
         }else{
-            return accountRepository.findByUserId(userId);
+            List<Account> accounts = accountRepository.findByUserId(userId);
+            return accountToResponseDTOList(accounts);
         }
     }
 
-    public List<Account> getAllAccounts(){
-        return (List<Account>) accountRepository.findAll();
+    public List<AccountResponseDTO> getAllAccounts(){
+        List<Account> accounts = accountRepository.findAll();
+        return accountToResponseDTOList(accounts);
     }
 
-    public Account updateAccount(Account account){
-        Account acc = getAccountByIban(account.getIban());
+    public AccountResponseDTO updateAccount(AccountUpdateDTO account){
+        Account acc = accountRepository.findOneByIban(account.getIban());
+        if(userRepository.existsByid(account.getUserId())){
+            acc.setAbsoluteLimit(account.getAbsoluteLimit());
+            acc.setType(account.getType());
+            acc.setLocked(account.getLocked());
+            User u = userRepository.findByIdEquals(account.getUserId());
+            acc.setUser(u);
+        }else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no user for this userId");
+        }
 
-        acc.setAbsoluteLimit(account.getAbsoluteLimit());
-        acc.setType(account.getType());
-        acc.setBalance(account.getBalance());
-        acc.setLocked(account.getLocked());
-        acc.setUserId(account.getUserId());
-        accountRepository.save(account);
-        return acc;
+        accountRepository.save(acc);
+        return accountToResponseDTO(acc);
     }
 
-    public Account addAccount(AccountDTO acc){
+    public AccountResponseDTO addAccount(AccountCreateDTO acc){
         if(userRepository.existsByid(acc.getUserId())){
             String iban = generateIban();
             Account account = new Account();
@@ -108,20 +133,22 @@ public class AccountService {
             account.setType(acc.getType());
             account.setBalance(0.00);
             account.setLocked(acc.getLocked());
-            account.setUserId(acc.getUserId());
+            //set user
+            User u = userRepository.findByIdEquals(acc.getUserId());
+            account.setUser(u);
             accountRepository.save(account);
-            return account;
+            return accountToResponseDTO(account);
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no user for this UserId");
         }
     }
 
-    public Account lockAccountByIban(String iban){
+    public AccountResponseDTO lockAccountByIban(String iban){
         if(accountRepository.existsByiban(iban)){
             Account acc = accountRepository.findOneByIban(iban);
             acc.setLocked(true);
             accountRepository.save(acc);
-            return acc;
+            return accountToResponseDTO(acc);
         }
         else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No account found for this Iban");

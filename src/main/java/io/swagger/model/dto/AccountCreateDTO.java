@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
-public class AccountDTO {
+public class AccountCreateDTO {
 
     @JsonProperty("type")
     private AccountType type;
@@ -21,7 +21,7 @@ public class AccountDTO {
     @JsonProperty("userId")
     private Long userId;
 
-    public AccountDTO(AccountType type, Double absoluteLimit, Boolean locked, Long userId) {
+    public AccountCreateDTO(AccountType type, Double absoluteLimit, Boolean locked, Long userId) {
         this.type = type;
         this.absoluteLimit = absoluteLimit;
         this.locked = locked;

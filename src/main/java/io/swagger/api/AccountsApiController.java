@@ -2,20 +2,21 @@ package io.swagger.api;
 
 import io.swagger.model.Account;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.model.dto.AccountDTO;
+import io.swagger.model.dto.AccountCreateDTO;
+import io.swagger.model.dto.AccountResponseDTO;
+import io.swagger.model.dto.AccountUpdateDTO;
 import io.swagger.service.AccountService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import javax.validation.constraints.*;
+
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -39,34 +40,34 @@ public class AccountsApiController implements AccountsApi {
         this.request = request;
     }
 
-    public ResponseEntity addAccount(@Parameter(in = ParameterIn.DEFAULT, description = "account", required=true, schema=@Schema()) @Valid @RequestBody AccountDTO acc) {
-        Account account = accountService.addAccount(acc);
+    public ResponseEntity addAccount(@Parameter(in = ParameterIn.DEFAULT, description = "account", required=true, schema=@Schema()) @Valid @RequestBody AccountCreateDTO acc) {
+        AccountResponseDTO account = accountService.addAccount(acc);
         return ResponseEntity.status(HttpStatus.CREATED).body(account);
     }
 
-    public ResponseEntity<List<Account>> allAccounts() {
-        List<Account> accounts = accountService.getAllAccounts();
+    public ResponseEntity<List<AccountResponseDTO>> allAccounts() {
+        List<AccountResponseDTO> accounts = accountService.getAllAccounts();
         return ResponseEntity.status(200).body(accounts);
     }
 
-    public ResponseEntity<Account> findAccountByIban(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("iban") String iban) {
-        Account acc = accountService.getAccountByIban(iban);
+    public ResponseEntity<AccountResponseDTO> findAccountByIban(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("iban") String iban) {
+        AccountResponseDTO acc = accountService.getAccountByIban(iban);
         return ResponseEntity.status(HttpStatus.OK).body(acc);
     }
 
-    public ResponseEntity<List<Account>> findAccountsByUserId(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
-        List<Account> foundAccs = accountService.getAccountsByUserId(userId);
+    public ResponseEntity<List<AccountResponseDTO>> findAccountsByUserId(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
+        List<AccountResponseDTO> foundAccs = accountService.getAccountsByUserId(userId);
         return ResponseEntity.status(HttpStatus.OK).body(foundAccs);
     }
 
     public ResponseEntity lockAccount(@Parameter(in = ParameterIn.PATH, description = "iban to lock", required=true, schema=@Schema()) @PathVariable("iban") String iban) {
-        Account acc = accountService.lockAccountByIban(iban);
+        AccountResponseDTO acc = accountService.lockAccountByIban(iban);
         return ResponseEntity.status(HttpStatus.OK).body(acc);
 
     }
 
-    public ResponseEntity updateAccount(@Parameter(in = ParameterIn.DEFAULT, description = "account", required=true, schema=@Schema()) @Valid @RequestBody Account body) {
-        Account acc = accountService.updateAccount(body);
+    public ResponseEntity updateAccount(@Parameter(in = ParameterIn.DEFAULT, description = "account", required=true, schema=@Schema()) @Valid @RequestBody AccountUpdateDTO body) {
+        AccountResponseDTO acc = accountService.updateAccount(body);
         return ResponseEntity.status(HttpStatus.CREATED).body(acc);
     }
 
