@@ -2,14 +2,12 @@ package io.swagger.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigDecimal;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
@@ -25,38 +23,8 @@ public class Account   {
   @Id  private String iban = null;
 
 
-  /**
-   * Account type
-   */
-  public enum TypeEnum {
-    SAVING("SAVING"),
-    
-    CURRENT("CURRENT");
-
-    private String value;
-
-    TypeEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    @JsonCreator
-    public static TypeEnum fromValue(String text) {
-      for (TypeEnum b : TypeEnum.values()) {
-        if (String.valueOf(b.value).equals(text)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
   @JsonProperty("type")
-  private TypeEnum type = null;
+  private AccountType type = null;
 
   @JsonProperty("balance")
   private Double balance = null;
@@ -67,8 +35,9 @@ public class Account   {
   @JsonProperty("locked")
   private Boolean locked = null;
 
-  @JsonProperty("userId")
-  private Long userId = null;
+  @JsonProperty("user")
+  @ManyToOne
+  private User user = null;
 
   public Account iban(String iban) {
     this.iban = iban;
@@ -90,7 +59,7 @@ public class Account   {
     this.iban = iban;
   }
 
-  public Account type(TypeEnum type) {
+  public Account type(AccountType type) {
     this.type = type;
     return this;
   }
@@ -102,11 +71,11 @@ public class Account   {
   @Schema(required = true, description = "Account type")
       @NotNull
 
-    public TypeEnum getType() {
+    public AccountType getType() {
     return type;
   }
 
-  public void setType(TypeEnum type) {
+  public void setType(AccountType type) {
     this.type = type;
   }
 
@@ -173,8 +142,8 @@ public class Account   {
     this.locked = locked;
   }
 
-  public Account userId(Long userId) {
-    this.userId = userId;
+  public Account userId(User user) {
+    this.user = user;
     return this;
   }
 
@@ -185,12 +154,12 @@ public class Account   {
   @Schema(required = true, description = "")
       @NotNull
 
-    public Long getUserId() {
-    return userId;
+    public User getUser() {
+    return user;
   }
 
-  public void setUserId(Long userId) {
-    this.userId = userId;
+  public void setUser(User user) {
+    this.user = user;
   }
 
 
@@ -208,12 +177,12 @@ public class Account   {
         Objects.equals(this.balance, account.balance) &&
         Objects.equals(this.absoluteLimit, account.absoluteLimit) &&
         Objects.equals(this.locked, account.locked) &&
-        Objects.equals(this.userId, account.userId);
+        Objects.equals(this.user, account.user);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(iban, type, balance, absoluteLimit, locked, userId);
+    return Objects.hash(iban, type, balance, absoluteLimit, locked, user);
   }
 
   @Override
@@ -226,7 +195,7 @@ public class Account   {
     sb.append("    balance: ").append(toIndentedString(balance)).append("\n");
     sb.append("    absoluteLimit: ").append(toIndentedString(absoluteLimit)).append("\n");
     sb.append("    locked: ").append(toIndentedString(locked)).append("\n");
-    sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
+    sb.append("    userId: ").append(toIndentedString(user)).append("\n");
     sb.append("}");
     return sb.toString();
   }

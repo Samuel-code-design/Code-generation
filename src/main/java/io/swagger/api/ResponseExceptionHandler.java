@@ -16,7 +16,6 @@ import java.util.Objects;
 @ControllerAdvice
 public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
-
     @Order(2)
     @ExceptionHandler(value = {Exception.class})
     protected ResponseEntity<Object> handleResponseException(Exception ex, WebRequest request){
@@ -29,7 +28,7 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
         ExceptionDTO dto = new ExceptionDTO(ex.getReason());
         return handleExceptionInternal(ex, dto, new HttpHeaders(), ex.getStatus(), request);
     }
-
+   
 }
 
 
