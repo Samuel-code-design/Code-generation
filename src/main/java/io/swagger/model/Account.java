@@ -44,6 +44,18 @@ public class Account   {
     return this;
   }
 
+  public Account() {
+  }
+
+  public Account(String iban, AccountType type, Double balance, Double absoluteLimit, Boolean locked, User user) {
+    this.iban = iban;
+    this.type = type;
+    this.balance = balance;
+    this.absoluteLimit = absoluteLimit;
+    this.locked = locked;
+    this.user = user;
+  }
+
   /**
    * Get iban
    * @return iban

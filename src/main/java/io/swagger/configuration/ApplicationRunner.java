@@ -31,6 +31,7 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
         User bank = new User("bank", "hehehe", "bank", "bank", "bak@gmail.com", "06 12345678",
                 roles, false, true, 1000L, 1000L);
         service.signup(bank);
+
         Account account = new Account("NL01INHO0000000001", AccountType.SAVING, 100000.00, 100.00, false, bank);
     }
 
