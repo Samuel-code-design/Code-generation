@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class UserTest {
 
-
     private User user;
     @BeforeEach
 
@@ -26,6 +25,4 @@ class UserTest {
                 () -> user.setUsername(null));
         assertEquals("Username can not be empty", exception.getMessage());
     }
-
-
 }

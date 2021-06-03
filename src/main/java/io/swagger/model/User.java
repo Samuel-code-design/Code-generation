@@ -94,6 +94,7 @@ public class User {
         return email;
     }
     public void setEmail(String email) {
+        if (!email.contains("@")) throw new IllegalArgumentException("Email must contain the at sign");
         this.email = email;
     }
 
@@ -102,6 +103,7 @@ public class User {
         return phone;
     }
     public void setPhone(String phone) {
+        if (!phone.matches("[0-9]")) throw new IllegalArgumentException("Must consist of numbers only");
         this.phone = phone;
     }
 
@@ -135,6 +137,7 @@ public class User {
     }
 
     public void setDayLimit(Long dayLimit) {
+        if (dayLimit < 0) throw new IllegalArgumentException("Cannot be lower than zero");
         this.dayLimit = dayLimit;
     }
 
@@ -145,6 +148,7 @@ public class User {
     }
 
     public void setTransactionLimit(Long transactionLimit) {
+        if (transactionLimit < 0) throw new IllegalArgumentException("Cannot be lower than zero");
         this.transactionLimit = transactionLimit;
     }
 }
