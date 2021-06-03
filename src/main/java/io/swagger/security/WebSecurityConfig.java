@@ -46,7 +46,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         http.authorizeRequests()
                 .antMatchers(AUTH_WHITELIST).permitAll()
-                .antMatchers("accounts").hasRole("EMPLOYEE")
+                .antMatchers("/Accounts/**").hasRole("EMPLOYEE")
+                .antMatchers("/users/**").hasRole("EMPLOYEE")
                 .anyRequest().authenticated();
     }
 

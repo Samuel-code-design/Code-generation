@@ -27,6 +27,9 @@ public class AccountService {
 
     public AccountService() {
     }
+    public String generateIban(){
+        return "NL01INHO0000000001";
+    }
 
     public void updateBalance(double amount, String iban){
         if(accountRepository.existsByiban(iban)){

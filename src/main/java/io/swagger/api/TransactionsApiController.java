@@ -54,12 +54,7 @@ public class TransactionsApiController implements TransactionsApi {
     @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity makeTransactionCustomer(@Parameter(in = ParameterIn.DEFAULT, description = "transaction", required=true, schema=@Schema()) @Valid @RequestBody NewTransaction body) {
         Transaction transaction = new Transaction(body);
-        //employee kan voor iedereen transactions maken
-        //customer kan alleen vanaf zijn eigen accountFrom versturen
-        //savings account kan alleen naar of van accounts van de zelfde gebruiker
-        //check als de customer wel genoeg op ze bank heeft en al die limits
-        //alle checks nog eens na lopen
         transactionService.addTransaction(transaction);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Transaction created: " + transaction.getId());
+        return ResponseEntity.status(HttpStatus.OK).body(transaction);
     }
 }
