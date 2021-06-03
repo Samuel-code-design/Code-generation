@@ -48,7 +48,7 @@ public interface RegisterApi {
     @RequestMapping(value = "/register",
         consumes = { "application/json" }, 
         method = RequestMethod.POST)
-    ResponseEntity<User> registerUser(@Parameter(in = ParameterIn.DEFAULT, description = "register customer user", schema=@Schema()) @Valid @RequestBody RegisterDTO body);
+    ResponseEntity<String> registerUser(@Parameter(in = ParameterIn.DEFAULT, description = "register customer user", schema=@Schema()) @Valid @RequestBody RegisterDTO body);
 
 }
 

@@ -145,6 +145,7 @@
     <orderEntry type="library" name="Maven: org.modelmapper.extensions:modelmapper-spring:2.4.2" level="project" />
     <orderEntry type="library" name="Maven: org.modelmapper:modelmapper:2.4.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.18.20" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-configuration-processor:2.4.5" level="project" />
     <orderEntry type="library" name="Maven: io.cucumber:cucumber-java:6.10.4" level="project" />
     <orderEntry type="library" name="Maven: io.cucumber:cucumber-core:6.10.4" level="project" />
     <orderEntry type="library" name="Maven: io.cucumber:cucumber-gherkin:6.10.4" level="project" />
@@ -162,5 +163,6 @@
     <orderEntry type="library" name="Maven: junit:junit:4.13.2" level="project" />
     <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:2.2" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.5" level="project" />
+
   </component>
 </module>

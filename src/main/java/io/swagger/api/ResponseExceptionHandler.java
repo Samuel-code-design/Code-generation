@@ -16,26 +16,18 @@ import java.util.Objects;
 @ControllerAdvice
 public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @Order(3)
+
+    @Order(2)
     @ExceptionHandler(value = {Exception.class})
     protected ResponseEntity<Object> handleResponseException(Exception ex, WebRequest request){
         ExceptionDTO dto = new ExceptionDTO(ex.getMessage());
         return handleExceptionInternal(ex, dto, new HttpHeaders(), HttpStatus.valueOf(ex.getMessage()), request);
     }
-
     @Order(1)
     @ExceptionHandler(value = {ResponseStatusException.class})
     protected ResponseEntity<Object> handleResponseStatusException(ResponseStatusException ex, WebRequest request){
         ExceptionDTO dto = new ExceptionDTO(ex.getReason());
         return handleExceptionInternal(ex, dto, new HttpHeaders(), ex.getStatus(), request);
-    }
-
-    //werkt niet
-    @Order(2)
-    @ExceptionHandler(value = {NullPointerException.class})
-    protected ResponseEntity<Object> handleNullPointerException(NullPointerException ex, WebRequest request){
-        ExceptionDTO dto = new ExceptionDTO(ex.getLocalizedMessage());
-        return handleExceptionInternal(ex, dto, new HttpHeaders(), HttpStatus.NO_CONTENT, request);
     }
 
 }

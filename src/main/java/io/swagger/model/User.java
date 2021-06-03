@@ -22,8 +22,10 @@ public class User {
     private String email;
     private String phone;
 
+    @Enumerated(EnumType.ORDINAL)
     @ElementCollection(fetch = FetchType.EAGER)
     private List<Role> roles;
+
     private Boolean locked = false;
     private Boolean enabled = true;
     private Long dayLimit;
