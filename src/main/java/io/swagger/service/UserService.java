@@ -40,8 +40,11 @@ public class UserService {
     }
 
     public String signup(User user) {
+        //Checks if username already exists
         if (!userRepository.existsByUsername(user.getUsername())) {
+            //Checks if email already exists
             if (!userRepository.existsByEmail(user.getEmail())){
+                //Checks if password is right lenght
                 if (user.getPassword().length() > MINIMUM_PASSWORD_LENGTH){
                     user.setPassword(passwordEncoder.encode(user.getPassword()));
                     user.setDayLimit(1000L);
