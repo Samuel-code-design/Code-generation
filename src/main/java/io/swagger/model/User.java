@@ -61,6 +61,7 @@ public class User {
         return username;
     }
     public void setUsername(String username) {
+        if (username == "" || username == null) throw new IllegalArgumentException("Username can not be empty");
         this.username = username;
     }
 
