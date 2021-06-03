@@ -22,10 +22,9 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
         List<Role> roles = new ArrayList<>();
         roles.add(Role.ROLE_CUSTOMER);
 
-        User u = new User("JD0001", "Wachtwoord1#", "Samuel", "brouwer", "samuel11hoi@gmail.com", "06 12345678",
+        User u = new User("JD0001", "Wachtwoord1#", "Samuel", "brouwer", "samuel@gmail.com", "06 12345678",
                  roles, false, true, 1000L, 1000L);
         service.signup(u);
-
     }
 
 
