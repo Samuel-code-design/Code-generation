@@ -3,7 +3,9 @@ package io.swagger.service;
 import io.swagger.model.Account;
 import io.swagger.repository.AccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -19,12 +21,19 @@ public class AccountService {
         return "NL01INHO0000000001";
     }
 
-    public void updateBalance(double amount, Account account){
-        double balance = account.getBalance();
-        double newbalance = balance + amount;
-        account.setBalance(newbalance);
+    public void updateBalance(double amount, String iban){
+        if(accountRepository.existsByiban(iban)){
+            Account account = accountRepository.findOneByIban(iban);
 
-        accountRepository.save(account);
+            double balance = account.getBalance();
+            double newBalance = balance + amount;
+            account.setBalance(newBalance);
+
+            accountRepository.save(account);
+        }else
+        {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No Account found for this iban");
+        }
     }
 
     public void updateAccount(Account account){

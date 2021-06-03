@@ -9,7 +9,9 @@ import java.math.BigDecimal;
 import org.threeten.bp.OffsetDateTime;
 import org.springframework.validation.annotation.Validated;
 
+import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 
@@ -22,21 +24,24 @@ import javax.validation.constraints.*;
 @MappedSuperclass
 public class NewTransaction   {
   @JsonProperty("amount")
-  private BigDecimal amount = null;
+  private Long amount = null;
 
   @JsonProperty("timestamp")
   private LocalDateTime timestamp = null;
 
   @JsonProperty("accountFrom")
+  @ManyToOne(targetEntity = Account.class)
   private String accountFrom = null;
 
   @JsonProperty("accountTo")
+  @ManyToOne(targetEntity = Account.class)
   private String accountTo = null;
 
   @JsonProperty("performingUser")
-  private Integer performingUser = null;
+  @ManyToOne(targetEntity = User.class)
+  private Long performingUser = null;
 
-  public NewTransaction amount(BigDecimal amount) {
+  public NewTransaction amount(Long amount) {
     this.amount = amount;
     return this;
   }
@@ -49,11 +54,11 @@ public class NewTransaction   {
       @NotNull
 
     @Valid
-    public BigDecimal getAmount() {
+    public Long getAmount() {
     return amount;
   }
 
-  public void setAmount(BigDecimal amount) {
+  public void setAmount(Long amount) {
     this.amount = amount;
   }
 
@@ -118,7 +123,7 @@ public class NewTransaction   {
     this.accountTo = accountTo;
   }
 
-  public NewTransaction performingUser(Integer performingUser) {
+  public NewTransaction performingUser(Long performingUser) {
     this.performingUser = performingUser;
     return this;
   }
@@ -130,11 +135,11 @@ public class NewTransaction   {
   @Schema(example = "1", required = true, description = "user id from the person who did the transaction (either customer or employee)")
       @NotNull
 
-    public Integer getPerformingUser() {
+    public Long getPerformingUser() {
     return performingUser;
   }
 
-  public void setPerformingUser(Integer performingUser) {
+  public void setPerformingUser(Long performingUser) {
     this.performingUser = performingUser;
   }
 

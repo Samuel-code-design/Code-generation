@@ -13,5 +13,7 @@ public interface AccountRepository extends CrudRepository<Account, Long> {
 
     List<Account> findByIban(String iban);
 
+    boolean existsByiban(String iban);
+
     Account findOneByIban(String iban);
 }

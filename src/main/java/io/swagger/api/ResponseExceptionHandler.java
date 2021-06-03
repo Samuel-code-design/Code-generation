@@ -38,6 +38,6 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, dto, new HttpHeaders(), HttpStatus.NO_CONTENT, request);
     }
 
-
-
 }
+
+
