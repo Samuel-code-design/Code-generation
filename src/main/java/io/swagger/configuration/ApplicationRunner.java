@@ -20,7 +20,7 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
     @Override
     public void run(ApplicationArguments args) throws Exception {
         List<Role> roles = new ArrayList<>();
-        roles.add(Role.ROLE_CUSTOMER);
+        roles.add(Role.ROLE_EMPLOYEE);
 
         User u = new User("JD0001", "Wachtwoord1#", "Samuel", "brouwer", "samuel11hoi@gmail.com", "06 12345678",
                 roles, false, true, 1000L, 1000L);

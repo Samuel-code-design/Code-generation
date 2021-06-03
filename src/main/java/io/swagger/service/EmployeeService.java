@@ -60,7 +60,8 @@ public class EmployeeService {
         //check if new user is also a customer
         if (body.getRole().contains(Role.ROLE_CUSTOMER)){
             //save the user and generate a CURRENT account
-            generateAccountForUser(repository.save(user));
+            accountService.generateCurrentAccountForUser(user);
+//            generateAccountForUser(repository.save(user));
         } else {
             repository.save(user);
         }
@@ -174,16 +175,4 @@ public class EmployeeService {
         return  user;
     }
 
-    public void generateAccountForUser(User u){
-        BigDecimal ABSOLUTE_LIMIT = BigDecimal.valueOf(0);
-        Account acc = new Account();
-        acc.userId(u.getId());
-
-        acc.setBalance(0.0);
-        acc.setAbsoluteLimit(ABSOLUTE_LIMIT);
-        acc.setIban(accountService.generateIban());
-        acc.locked(false);
-        acc.type(Account.TypeEnum.CURRENT);
-        accountRepository.save(acc);
-    }
 }

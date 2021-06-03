@@ -1,6 +1,7 @@
 package io.swagger.service;
 
 import io.swagger.model.Account;
+import io.swagger.model.AccountType;
 import io.swagger.model.User;
 import io.swagger.model.dto.AccountCreateDTO;
 import io.swagger.model.dto.AccountResponseDTO;
@@ -26,9 +27,6 @@ public class AccountService {
     private EmployeeRepository userRepository;
 
     public AccountService() {
-    }
-    public String generateIban(){
-        return "NL01INHO0000000001";
     }
 
     public void updateBalance(double amount, String iban){
@@ -156,5 +154,18 @@ public class AccountService {
         else{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No account found for this Iban");
         }
+    }
+
+        public void generateCurrentAccountForUser(User u){
+        Double ABSOLUTE_LIMIT = 0.0;
+        Account acc = new Account();
+
+        acc.setUser(u);
+        acc.setBalance(0.0);
+        acc.setAbsoluteLimit(ABSOLUTE_LIMIT);
+        acc.setIban(generateIban());
+        acc.locked(false);
+        acc.type(AccountType.CURRENT);
+        accountRepository.save(acc);
     }
 }

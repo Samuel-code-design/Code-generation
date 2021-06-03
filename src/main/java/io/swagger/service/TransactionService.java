@@ -1,9 +1,6 @@
 package io.swagger.service;
 
-import io.swagger.model.Account;
-import io.swagger.model.Role;
-import io.swagger.model.Transaction;
-import io.swagger.model.User;
+import io.swagger.model.*;
 import io.swagger.repository.AccountRepository;
 import io.swagger.repository.TransactionRepository;
 import io.swagger.repository.UserRepository;
@@ -46,7 +43,7 @@ public class TransactionService {
             //is accountFrom wel van de customer
             Boolean accountIsFromCustomer = false;
             for (Account acc : userAccounts) {
-                if(acc.getUserId() == transaction.getPerformingUser())
+                if(acc.getUser().getId() == transaction.getPerformingUser())
                     accountIsFromCustomer = true;
             }
             if(!accountIsFromCustomer)
@@ -59,11 +56,11 @@ public class TransactionService {
         //check als accountTo niet leeg is
 
         //check als accountFrom van type savings is en als accountTo ook van gebruiker is
-        if(accountFrom.getType() == Account.TypeEnum.SAVING && !userAccounts.contains(accountTo))
+        if(accountFrom.getType() == AccountType.SAVING && !userAccounts.contains(accountTo))
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Saving account can only send to accounts that are from you.");
 
         //check als accountTo van type savings is en als accountFrom ook van gebruiker is
-        if(accountTo.getType() == Account.TypeEnum.SAVING && !userAccounts.contains(accountFrom))
+        if(accountTo.getType() == AccountType.SAVING && !userAccounts.contains(accountFrom))
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "You can only send to your own saving accounts.");
 
 
