@@ -1,126 +1,189 @@
 package io.swagger.service;
 
-import io.swagger.model.dto.CreateUserDTO;
+import io.swagger.model.Account;
+import io.swagger.model.Role;
 import io.swagger.model.User;
-import io.swagger.models.auth.In;
+import io.swagger.model.dto.CreateUserDTO;
+import io.swagger.repository.AccountRepository;
 import io.swagger.repository.EmployeeRepository;
-import org.apache.tomcat.util.bcel.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 
 @Service
 public class EmployeeService {
+    //TODO: messages werken niet
+    //todo: responses Httpstatus 200 message (wanneer het goed gaat)
+
+    //TODO: ook savings account aanmaken?
     private final EmployeeRepository repository;
+    private final AccountRepository accountRepository;
+    private final AccountService accountService;
 
     @Autowired
-    public EmployeeService(EmployeeRepository repository) {
+    private PasswordEncoder passwordEncoder;
+
+
+    @Autowired
+    public EmployeeService(EmployeeRepository repository, AccountRepository accountRepository, AccountService accountService) {
         this.repository = repository;
+        this.accountRepository = accountRepository;
+        this.accountService = accountService;
     }
 
-    public void createUser(CreateUserDTO newUser){
+    public User createUser(CreateUserDTO body){
+        int MINIMUM_PASSWORD_LENGTH = 6;
+
+        //check if the user is valid
+
+        if (repository.existsByUsername(body.getUsername())){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "Username is already in use, please try again and choose a different one");
+        }
+        else if (repository.existsByEmail(body.getEmail()) || repository.existsByPhone(body.getPhone())){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "User already exists");
+        }
+        else if (body.getPassword().length() < MINIMUM_PASSWORD_LENGTH){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "Password is too short, choose a longer one and try again");
+        }
+        //make the user
+        User user = createUserFromDTO(body);
+
+        //check if new user is also a customer
+        if (body.getRole().contains(Role.ROLE_CUSTOMER)){
+            //save the user and generate a CURRENT account
+            generateAccountForUser(repository.save(user));
+        } else {
+            repository.save(user);
+        }
+        return user;
+    }
+
+    public User lockUserById(Long id) {
+        User u = userById(id);
+        if (u.getLocked().equals(true)) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "User is already locked");
+        } else {
+            u.setLocked(true);
+            return repository.save(u);
+        }
+    }
+
+    public User updateUser(User body) {
+        //get the user with the given id
+        User u = repository.findByIdEquals(body.getId());
+
+        //check if the user exists
+        if (u != null) {
+
+            //check if username is being changed
+            if (!u.getUsername().equals(body.getUsername())){
+                //check if another user is using this username
+                if (repository.existsByUsername(body.getUsername())){
+                    throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                            "Username is already in use by a different user");
+                }
+            }
+            //check if email is being changed
+            else if (!u.getEmail().equals(body.getEmail())){
+                //check if another user is using this email
+                if (repository.existsByEmail(body.getEmail())){
+                    throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                            "Email is already in use by a different user");
+                }
+            }
+            //check if phone is being changed
+            else if (!u.getPhone().equals(body.getPhone())){
+                //check if another user is using this phone
+                if (repository.existsByPhone(body.getPhone())){
+                    throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                            "Phone is already in use by a different user");
+                }
+            }
+
+            //encode the password
+            body.setPassword(passwordEncoder.encode(body.getPassword()));
+            return repository.save(body);
+        }
+        else {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "User with this id does not exist");
+        }
+    }
+
+    public List<User> getUsers(String searchString) {
+        //check if the field is not empty
+        if (searchString != null && !searchString.equals("")){
+            List<User> users =  repository.findByEmailContainsOrUsernameContainsOrFirstNameContainsOrLastNameContaining
+                    (searchString, searchString, searchString, searchString);
+
+            //check if a user was found
+            if (users.toArray().length == 0){
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                        "No user found");
+            }
+            return users;
+        }
+        else{
+            List<User> u = repository.findAll();
+            if(u.toArray().length == 0){
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                        "There are no users");
+            }
+            return repository.findAll();
+        }
+    }
+
+    public User userById(Long id) {
+        User u = repository.findByIdEquals(id);
+        if (u == null) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "No User with this id");
+        }
+        return u;
+    }
+
+    public User createUserFromDTO(CreateUserDTO body){
         Long DAY_LIMIT = 1000L;
         Long TRANSACTION_LIMIT = 1000L;
 
-//        int MINIMUM_PASSWORD_LENGTH = 10;
-//        String password = newUser.getPassword();
-//        String email = newUser.getEmail();
-//        String username = newUser.getUsername();
-//        String phone = newUser.getPhone();
-//
-//        boolean userExists = false;
-//        boolean passTooShort = false;
-//        boolean usernameInUse = false;
-//
-//        for (User u: repository.findAll()) {
-//            if (u.getEmail().equals(email) ||
-//                    u.getPhone().equals(phone)){
-//                userExists = true;
-//                break;
-//            }
-//            else if (password.length() < MINIMUM_PASSWORD_LENGTH){
-//                passTooShort = true;
-//                break;
-//            }
-//            else if (u.getUsername().equals(username)){
-//                usernameInUse = true;
-//                break;
-//            }
-//        }
-//
-//        if (userExists){
-//            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "User already exists");
-//        }
-//        else if (passTooShort){
-//            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Password is too short, choose a longer one and try again");
-//        }else if(usernameInUse){
-//            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Username is already in use, please try again and choose a different one");
-//        }
-//        else{
-//            User user = new User();
-//            user.setId(null);
-//            user.setLocked(false);
-//            user.setDayLimit(DAY_LIMIT);
-//            user.setTransactionLimit(TRANSACTION_LIMIT);
-//
-//            user.setEmail(email);
-//            user.setPassword(password);
-//            user.setUsername(username);
-//            user.setFirstName(newUser.getFirstName());
-//            user.setLastName(newUser.getLastName());
-//            user.setPhone(newUser.getPhone());
-//            user.setRoles(newUser.getRole());
-//
-//            repository.save(user);
-//        }
         User user = new User();
         user.setId(null);
         user.setLocked(false);
         user.setDayLimit(DAY_LIMIT);
         user.setTransactionLimit(TRANSACTION_LIMIT);
 
-        user.setEmail(newUser.getEmail());
-        user.setPassword(newUser.getPassword());
-        user.setUsername(newUser.getUsername());
-        user.setFirstName(newUser.getFirstName());
-        user.setLastName(newUser.getLastName());
-        user.setPhone(newUser.getPhone());
-        user.setRoles(newUser.getRole());
+        user.setEmail(body.getEmail());
+        user.setUsername(body.getUsername());
+        user.setFirstName(body.getFirstName());
+        user.setLastName(body.getLastName());
+        user.setPhone(body.getPhone());
+        user.setRoles(body.getRole());
 
-        repository.save(user);
+        //encode the password
+        user.setPassword(passwordEncoder.encode(body.getPassword()));
+        return  user;
     }
 
-    public void lockUserByEmail(String email) {
-        User u = repository.findByEmailEquals(email);
-        u.setLocked(true);
-        repository.save(u);
-    }
+    public void generateAccountForUser(User u){
+        BigDecimal ABSOLUTE_LIMIT = BigDecimal.valueOf(0);
+        Account acc = new Account();
+        acc.userId(u.getId());
 
-    public void lockUserById( Long id) {
-        User u = repository.findByIdEquals(id);
-        u.setLocked(true);
-        repository.save(u);
+        acc.setBalance(0.0);
+        acc.setAbsoluteLimit(ABSOLUTE_LIMIT);
+        acc.setIban(accountService.generateIban());
+        acc.locked(false);
+        acc.type(Account.TypeEnum.CURRENT);
+        accountRepository.save(acc);
     }
-
-    public void updateUser(User body) {
-        repository.save(body);
-    }
-
-    public List<User> getUsers(String searchString) {
-        if (searchString != null){
-            return repository.findAllByEmailContaining(searchString); //TODO: ook username fistname en lastname
-        }
-        return repository.findAll();
-    }
-
-    public User userByEmail(String email) {
-        return  repository.findByEmailEquals(email);
-    }
-
-    public User userById(Long id) {
-        return repository.findByIdEquals(id);
-    }
-
 }
