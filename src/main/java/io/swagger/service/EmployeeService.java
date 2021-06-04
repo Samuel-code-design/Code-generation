@@ -126,10 +126,10 @@ public class EmployeeService {
         }
         else{
             List<User> u = repository.findAll();
-//            if(u.toArray().length == 0){
-//                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
-//                        "There are no users");
-//            }
+            if(u.toArray().length == 0){
+                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                        "There are no users");
+            }
             return repository.findAll();
         }
     }

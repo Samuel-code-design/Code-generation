@@ -39,7 +39,7 @@ public class UsersApiController implements UsersApi {
 
     public ResponseEntity<User> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "New user body", required=true, schema=@Schema()) @Valid @RequestBody CreateUserDTO body) {
         User u = service.createUser(body);
-        return ResponseEntity.status(HttpStatus.OK).body(u);
+        return ResponseEntity.status(HttpStatus.CREATED).body(u);
     }
 
     public ResponseEntity<User> lockUserById(@Parameter(in = ParameterIn.PATH, description = "The userID", required=true, schema=@Schema()) @PathVariable("id") Long id) {
@@ -67,7 +67,6 @@ public class UsersApiController implements UsersApi {
 
     public ResponseEntity<User> userById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Long id) throws IOException {
         User user = service.userById(id);
-//        user.setPassword("SECRET");
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 }
