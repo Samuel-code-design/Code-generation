@@ -32,15 +32,6 @@ public class TransactionService {
     private AccountService accountService;
 
     public void addTransaction (Transaction transaction) {
-        if(transaction.getAccountTo().equals("NL01INHO0000000001")
-                || transaction.getAccountFrom().equals("NL01INHO0000000001"))
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
-                    "Transactions to or from the bank account are prohibited.");
-
-        if(transaction.getAmount() < 0.01)
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
-                    "Transaction amount in below the minimum.");
-
         User perfUser;
         //bestaat de performing user
         if(!userRepository.existsById(transaction.getPerformingUser()))
@@ -55,7 +46,7 @@ public class TransactionService {
             //is accountFrom wel van de customer
             Boolean accountIsFromCustomer = false;
             for (Account acc : userAccounts) {
-                if(acc.getUser().getId() == transaction.getPerformingUser())
+                if(acc.getUser().getId().equals(transaction.getPerformingUser()))
                     accountIsFromCustomer = true;
             }
             if(!accountIsFromCustomer)
@@ -92,8 +83,9 @@ public class TransactionService {
                     "Transaction will make the balance of accountFrom under the absolute limit.");
 
         //check als de daily limit niet overschreven wordt
-        List<Transaction> transactionsToday = transactionRepository.findAllByTimestampAfter(
-                LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT));
+        LocalDateTime localDateTimeNow = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
+        List<Transaction> transactionsToday = transactionRepository.findAllByTimestampBetween(
+                localDateTimeNow, localDateTimeNow.plusDays(1));
         double spendBalanceToday = 0;
         if(!transactionsToday.isEmpty()){
             for (Transaction trans : transactionsToday) {

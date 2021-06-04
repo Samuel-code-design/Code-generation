@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import io.cucumber.java.en_old.Ac;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.threeten.bp.OffsetDateTime;
 import org.springframework.validation.annotation.Validated;
 
@@ -100,6 +103,8 @@ public class NewTransaction   {
   }
 
   public void setAccountFrom(String accountFrom) {
+    if(accountFrom.equals("NL01INHO0000000001"))
+      throw new IllegalArgumentException("Transactions to or from are prohibited.");
     if(accountFrom == accountTo)
       throw new IllegalArgumentException("Transactions cannot go to the same account.");
     this.accountFrom = accountFrom;
@@ -122,6 +127,8 @@ public class NewTransaction   {
   }
 
   public void setAccountTo(String accountTo) {
+    if(accountTo.equals("NL01INHO0000000001"))
+      throw new IllegalArgumentException("Transactions to or from are prohibited.");
     this.accountTo = accountTo;
   }
 
