@@ -29,7 +29,6 @@ public class EmployeeService {
 
     public User createUser(CreateUserDTO body){
         int MINIMUM_PASSWORD_LENGTH = 6;
-
         //check if the user is valid
 
         if (repository.existsByUsername(body.getUsername())){
@@ -50,10 +49,9 @@ public class EmployeeService {
         //check if new user is also a customer
         if (body.getRole().contains(Role.ROLE_CUSTOMER)){
             //save the user and generate a CURRENT account
+            repository.save(user);
             accountService.generateCurrentAccountForUser(user);
 //            generateAccountForUser(repository.save(user));
-        } else {
-            repository.save(user);
         }
         return user;
     }

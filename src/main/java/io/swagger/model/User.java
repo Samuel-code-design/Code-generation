@@ -100,8 +100,8 @@ public class User {
         return phone;
     }
     public void setPhone(String phone) {
-        String[] parts = phone.split(" ");
-        if (!parts[1].matches("[0-9]")) throw new IllegalArgumentException("Second part must consist of numbers only");
+//        String[] parts = phone.split(" ");
+//        if (!parts[1].matches("[0-9]")) throw new IllegalArgumentException("Second part must consist of numbers only");
         this.phone = phone;
     }
 

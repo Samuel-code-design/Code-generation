@@ -50,18 +50,19 @@ public class AuthenticationService {
             //Checks if email already exists
             if (!userRepository.existsByEmail(user.getEmail())){
                 //Checks if password is right lenght
-                if (user.getPassword().length() > MINIMUM_PASSWORD_LENGTH){
+//                if (user.getPassword().length() > MINIMUM_PASSWORD_LENGTH){
                     user.setPassword(passwordEncoder.encode(user.getPassword()));
                     user.setDayLimit(1000L);
                     user.setTransactionLimit(100L);
                     user.setRoles(Arrays.asList(Role.ROLE_CUSTOMER));
-                    userRepository.save(user);
+//                    user.setRoles(Arrays.asList(Role.ROLE_EMPLOYEE));
+                userRepository.save(user);
                     AccountCreateDTO accountCreateDTO = new AccountCreateDTO(AccountType.SAVING,  0.00, false, user.getId());
                     accountService.addAccount(accountCreateDTO);
                     return "Account created, you can login now.";
-                } else {
-                    throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Password length to short, minimum length 7.");
-                }
+//                } else {
+//                    throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Password length to short, minimum length 7.");
+//                }
             } else {
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Email already in use, please try again nd choose a different one");
             }
