@@ -43,6 +43,7 @@ public class User {
 
     public User(){
     }
+
     @Schema(example = "1", description = "")
     @NotNull
     public Long getId() {

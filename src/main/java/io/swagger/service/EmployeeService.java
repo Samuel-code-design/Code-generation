@@ -51,7 +51,9 @@ public class EmployeeService {
             //save the user and generate a CURRENT account
             repository.save(user);
             accountService.generateCurrentAccountForUser(user);
-//            generateAccountForUser(repository.save(user));
+        }
+        else{
+            repository.save(user);
         }
         return user;
     }
@@ -124,10 +126,10 @@ public class EmployeeService {
         }
         else{
             List<User> u = repository.findAll();
-            if(u.toArray().length == 0){
-                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
-                        "There are no users");
-            }
+//            if(u.toArray().length == 0){
+//                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+//                        "There are no users");
+//            }
             return repository.findAll();
         }
     }
