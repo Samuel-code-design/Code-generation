@@ -68,6 +68,8 @@ public class Account   {
   }
 
   public void setIban(String iban) {
+    if (iban == null) throw new IllegalArgumentException("Iban cannot be empty");
+    if(!iban.matches("NL\\d{2}INHO0\\d{9}")) throw new IllegalArgumentException("Iban is not in correct format");
     this.iban = iban;
   }
 
@@ -88,6 +90,7 @@ public class Account   {
   }
 
   public void setType(AccountType type) {
+    if(type == null) throw new IllegalArgumentException("Account type cannot be empty");
     this.type = type;
   }
 
@@ -130,6 +133,7 @@ public class Account   {
   }
 
   public void setAbsoluteLimit(Double absoluteLimit) {
+    if (absoluteLimit == null) throw new IllegalArgumentException("Absolutelimit cannot be empty");
     this.absoluteLimit = absoluteLimit;
   }
 
@@ -154,7 +158,7 @@ public class Account   {
     this.locked = locked;
   }
 
-  public Account userId(User user) {
+  public Account user(User user) {
     this.user = user;
     return this;
   }
@@ -166,11 +170,12 @@ public class Account   {
   @Schema(required = true, description = "")
       @NotNull
 
-    public User getUser() {
+  public User getUser() {
     return user;
   }
 
   public void setUser(User user) {
+    if (user == null) throw new IllegalArgumentException("User cannot be empty");
     this.user = user;
   }
 
