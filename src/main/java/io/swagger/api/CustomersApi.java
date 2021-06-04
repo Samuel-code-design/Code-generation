@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.CookieValue;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +49,7 @@ public interface CustomersApi {
     @RequestMapping(value = "/customers/transactions",
         produces = { "application/json" }, 
         method = RequestMethod.GET)
-    ResponseEntity<List<Transaction>> getTransactions(@Parameter(in = ParameterIn.QUERY, description = "limit of transactions to get" ,schema=@Schema()) @Valid @RequestParam(value = "limit", required = false) Long limit, @Parameter(in = ParameterIn.QUERY, description = "get transactions from this date" ,schema=@Schema()) @Valid @RequestParam(value = "date", required = false) LocalDate date);
+    ResponseEntity<List<Transaction>> getTransactions(@Parameter(in = ParameterIn.QUERY, description = "limit of transactions to get" ,schema=@Schema()) @Valid @RequestParam(value = "limit", required = false) Long limit, @Parameter(in = ParameterIn.QUERY, description = "get transactions from this date" ,schema=@Schema()) @Valid @RequestParam(value = "date", required = false) String date);
 
 }
 

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import io.cucumber.java.en_old.Ac;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
 import org.threeten.bp.OffsetDateTime;
@@ -24,24 +25,21 @@ import javax.validation.constraints.*;
 @MappedSuperclass
 public class NewTransaction   {
   @JsonProperty("amount")
-  private Long amount = null;
+  private Double amount = null;
 
   @JsonProperty("timestamp")
   private LocalDateTime timestamp = null;
 
   @JsonProperty("accountFrom")
-  @ManyToOne(targetEntity = Account.class)
   private String accountFrom = null;
 
   @JsonProperty("accountTo")
-  @ManyToOne(targetEntity = Account.class)
   private String accountTo = null;
 
   @JsonProperty("performingUser")
-  @ManyToOne(targetEntity = User.class)
   private Long performingUser = null;
 
-  public NewTransaction amount(Long amount) {
+  public NewTransaction amount(Double amount) {
     this.amount = amount;
     return this;
   }
@@ -54,11 +52,13 @@ public class NewTransaction   {
       @NotNull
 
     @Valid
-    public Long getAmount() {
-    return amount;
+    public Double getAmount() {
+      return amount;
   }
 
-  public void setAmount(Long amount) {
+  public void setAmount(Double amount) {
+    if (amount < 0.01)
+      throw new IllegalArgumentException("Amount cannot be negative.");
     this.amount = amount;
   }
 
@@ -100,6 +100,8 @@ public class NewTransaction   {
   }
 
   public void setAccountFrom(String accountFrom) {
+    if(accountFrom == accountTo)
+      throw new IllegalArgumentException("Transactions cannot go to the same account.");
     this.accountFrom = accountFrom;
   }
 
