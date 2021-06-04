@@ -44,7 +44,7 @@ public class RegisterApiController implements RegisterApi {
 
     public ResponseEntity<String> registerUser(@Parameter(in = ParameterIn.DEFAULT, description = "register customer user", schema=@Schema()) @Valid @RequestBody RegisterDTO body) {
         String message = authenticationService.signup(modelMapper.map(body, User.class));
-        return new ResponseEntity<String>(message, HttpStatus.OK);
+        return new ResponseEntity<String>(message, HttpStatus.CREATED);
     }
 
 }

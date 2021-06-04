@@ -60,7 +60,7 @@ public class AuthenticationService {
                     accountService.addAccount(accountCreateDTO);
                     return "Account created, you can login now.";
                 } else {
-                    throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Password length to short, minimum length 7.");
+                    throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Password length to short, minimum length 7");
                 }
             } else {
                 throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Email already in use, please try again nd choose a different one");

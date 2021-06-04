@@ -29,6 +29,9 @@ public class RegisterDTO {
     }
 
     public void setUsername(String username) {
+        if (username.trim().isEmpty() || username == null){
+            throw new IllegalArgumentException("Username should not be empty");
+        }
         this.username = username;
     }
 
@@ -40,6 +43,9 @@ public class RegisterDTO {
     }
 
     public void setPassword(String password) {
+        if (password.trim().isEmpty() || password == null){
+            throw new IllegalArgumentException("Password should not be empty");
+        }
         this.password = password;
     }
 
@@ -52,6 +58,9 @@ public class RegisterDTO {
     }
 
     public void setFirstName(String firstName) {
+        if (firstName.trim().isEmpty() || firstName == null){
+            throw new IllegalArgumentException("Firstname should not be empty");
+        }
         this.firstName = firstName;
     }
 
@@ -63,6 +72,9 @@ public class RegisterDTO {
     }
 
     public void setLastName(String lastName) {
+        if (lastName.trim().isEmpty() || lastName == null){
+            throw new IllegalArgumentException("Lastname should not be empty");
+        }
         this.lastName = lastName;
     }
 
@@ -74,6 +86,9 @@ public class RegisterDTO {
     }
 
     public void setEmail(String email) {
+        if (email.trim().isEmpty() || email == null){
+            throw new IllegalArgumentException("Email should not be empty");
+        }
         this.email = email;
     }
 
@@ -85,6 +100,9 @@ public class RegisterDTO {
     }
 
     public void setPhone(String phone) {
+        if (phone.trim().isEmpty() || phone == null){
+            throw new IllegalArgumentException("Phone should not be empty");
+        }
         this.phone = phone;
     }
 }
