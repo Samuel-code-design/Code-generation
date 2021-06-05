@@ -25,6 +25,9 @@ public class RegisterDTO {
 
     @Schema(example = "JD0001", description = "")
     public String getUsername() {
+        if (username.trim().isEmpty() || username == null){
+            throw new IllegalArgumentException("Username should not be empty");
+        }
         return username;
     }
 
@@ -39,6 +42,9 @@ public class RegisterDTO {
         @NotNull
 
     public String getPassword() {
+        if (password.trim().isEmpty() || password == null){
+            throw new IllegalArgumentException("Password should not be empty");
+        }
         return password;
     }
 
@@ -54,6 +60,9 @@ public class RegisterDTO {
         @NotNull
 
     public String getFirstName() {
+        if (firstName.trim().isEmpty() || firstName == null){
+            throw new IllegalArgumentException("Firstname should not be empty");
+        }
         return firstName;
     }
 
@@ -68,6 +77,9 @@ public class RegisterDTO {
         @NotNull
 
     public String getLastName() {
+        if (lastName.trim().isEmpty() || lastName == null){
+            throw new IllegalArgumentException("Lastname should not be empty");
+        }
         return lastName;
     }
 
@@ -82,6 +94,9 @@ public class RegisterDTO {
         @NotNull
 
     public String getEmail() {
+        if (email.trim().isEmpty() || email == null){
+            throw new IllegalArgumentException("Email should not be empty");
+        }
         return email;
     }
 
@@ -96,6 +111,9 @@ public class RegisterDTO {
         @NotNull
 
     public String getPhone() {
+        if (phone.trim().isEmpty() || phone == null){
+            throw new IllegalArgumentException("Phone should not be empty");
+        }
         return phone;
     }
 

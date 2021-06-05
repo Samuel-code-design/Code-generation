@@ -11,12 +11,12 @@ class RegisterDTOTest {
 
     @BeforeEach
     public void Setup() {
-        registerDTO = new RegisterDTO("JD0001", "Wachtwoord1", "John", "Doe",
+        registerDTO = new RegisterDTO("JD0001", "Wachtwoord1#", "John", "Doe",
                 "JohnDoe@gmail.com", "06 12345678");
     }
 
     @Test
-    public void createGuitarShouldNotBeNull() {
+    public void registerUserShouldNotBeNull() {
         assertNotNull(registerDTO);
     }
 
