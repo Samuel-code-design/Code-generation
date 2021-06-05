@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AccountTest {
     private Account account;
-    @BeforeEach
 
+    @BeforeEach
     public void Setup() {
         account = new Account();
     }

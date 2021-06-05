@@ -97,7 +97,7 @@
     <orderEntry type="library" name="Maven: jakarta.xml.bind:jakarta.xml.bind-api:2.3.3" level="project" />
     <orderEntry type="library" name="Maven: jakarta.activation:jakarta.activation-api:1.2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.assertj:assertj-core:3.18.1" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest:2.2" level="project" />
+    <orderEntry type="library" name="Maven: org.hamcrest:hamcrest:2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter:5.7.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.junit.jupiter:junit-jupiter-api:5.7.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.opentest4j:opentest4j:1.2.0" level="project" />
@@ -151,7 +151,7 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.18.20" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.30" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-configuration-processor:2.4.5" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: io.cucumber:cucumber-java:5.7.0" level="project" />
+    <orderEntry type="library" name="Maven: io.cucumber:cucumber-java:5.7.0" level="project" />
     <orderEntry type="library" name="Maven: io.cucumber:cucumber-core:5.7.0" level="project" />
     <orderEntry type="library" name="Maven: io.cucumber:cucumber-gherkin:5.7.0" level="project" />
     <orderEntry type="library" name="Maven: io.cucumber:cucumber-gherkin-vintage:5.7.0" level="project" />
@@ -162,8 +162,8 @@
     <orderEntry type="library" name="Maven: io.cucumber:docstring:5.7.0" level="project" />
     <orderEntry type="library" name="Maven: org.apiguardian:apiguardian-api:1.1.0" level="project" />
     <orderEntry type="library" name="Maven: io.cucumber:cucumber-junit:5.7.0" level="project" />
+    <orderEntry type="library" name="Maven: junit:junit:4.13.2" level="project" />
+    <orderEntry type="library" name="Maven: org.hamcrest:hamcrest-core:2.2" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.5" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:2.2" level="project" />
   </component>
 </module>
