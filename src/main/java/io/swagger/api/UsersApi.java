@@ -102,7 +102,7 @@ public interface UsersApi {
             produces = { "application/json" },
             consumes = { "application/json" },
             method = RequestMethod.PUT)
-    ResponseEntity<User> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody User body);
+    ResponseEntity<User> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "the user information", required=true, schema=@Schema()) @Valid @RequestBody User body);
 
 
     @Operation(summary = "get users", description = "Returns a list of Users.", security = {

@@ -28,6 +28,20 @@ public class User {
     private Long dayLimit;
     private Long transactionLimit;
 
+    public User(Long id, String username, String password, String firstName, String lastName, String email, String phone, List<Role> roles, Boolean locked, Long dayLimit, Long transactionLimit) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.roles = roles;
+        this.locked = locked;
+        this.dayLimit = dayLimit;
+        this.transactionLimit = transactionLimit;
+    }
+
     public User(String username, String password, String firstName, String lastName, String email, String phone, List<Role> roles, Boolean locked, Long dayLimit, Long transactionLimit) {
         this.username = username;
         this.password = password;
@@ -59,7 +73,9 @@ public class User {
         return username;
     }
     public void setUsername(String username) {
-        if (username == "" || username == null) throw new IllegalArgumentException("Username can not be empty");
+        if (username.trim().isEmpty() || username == null){
+            throw new IllegalArgumentException("Username can not be empty");
+        }
         this.username = username;
     }
 
@@ -101,8 +117,10 @@ public class User {
         return phone;
     }
     public void setPhone(String phone) {
-//        String[] parts = phone.split(" ");
-//        if (!parts[1].matches("[0-9]")) throw new IllegalArgumentException("Second part must consist of numbers only");
+        //remove spaces and check if contains numbers only
+        if (!phone.replaceAll(" ","").matches("[0-9]")){
+            throw new IllegalArgumentException("Second part must consist of numbers only");
+        }
         this.phone = phone;
     }
 

@@ -6,6 +6,7 @@ import io.swagger.model.dto.CreateUserDTO;
 import io.swagger.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -28,9 +29,9 @@ public class EmployeeService {
     }
 
     public User createUser(CreateUserDTO body){
-        int MINIMUM_PASSWORD_LENGTH = 6;
-        //check if the user is valid
+        int MINIMUM_PASSWORD_LENGTH = 7;
 
+        //check if the user is valid
         if (repository.existsByUsername(body.getUsername())){
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                     "Username is already in use, please try again and choose a different one");
@@ -69,7 +70,9 @@ public class EmployeeService {
         }
     }
 
+    //TODO: werkt opeens niet meer
     public User updateUser(User body) {
+
         //get the user with the given id
         User u = repository.findByIdEquals(body.getId());
 
@@ -111,6 +114,8 @@ public class EmployeeService {
         }
     }
 
+
+
     public List<User> getUsers(String searchString) {
         //check if the field is not empty
         if (searchString != null && !searchString.equals("")){
@@ -135,12 +140,12 @@ public class EmployeeService {
     }
 
     public User userById(Long id) {
-        User u = repository.findByIdEquals(id);
-        if (u == null) {
+
+        if (repository.findByIdEquals(id) == null) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                     "No User with this id");
         }
-        return u;
+        return repository.findByIdEquals(id);
     }
 
     public User createUserFromDTO(CreateUserDTO body){

@@ -13,7 +13,7 @@ import java.net.URISyntaxException;
 import java.rmi.server.UID;
 
 
-public class MyStepdefs {
+public class EmployeeSteps {
 
     HttpHeaders headers = new HttpHeaders();
     String baseUrl = "https://localhost:8080/api/swagger-ui/";
@@ -24,7 +24,7 @@ public class MyStepdefs {
 
     @When("ik alle users ophaal")
     public void ikAlleUsersOphaal() throws URISyntaxException {
-        URI uri = new URI(baseUrl);
+        URI uri = new URI(baseUrl+ "users");
         HttpEntity<String> entity = new HttpEntity(null, headers);
         responseEntity = template.getForEntity(uri, String.class);
     }

@@ -1,6 +1,7 @@
 package io.swagger.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.api.UsersApi;
+import io.swagger.model.Role;
 import io.swagger.model.dto.CreateUserDTO;
 import io.swagger.model.User;
 import io.swagger.service.EmployeeService;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-05-17T12:11:50.256Z[GMT]")
@@ -48,17 +50,17 @@ public class UsersApiController implements UsersApi {
     }
 
     public ResponseEntity<User> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "The new user information", required=true, schema=@Schema()) @Valid @RequestBody User body) {
-        User u = service.updateUser(body);
+//        User u = service.updateUser(body);
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.ROLE_EMPLOYEE);
+
+        User u = new User(1l, "JD0001", "Wachtwoord1#", "Samuel", "brouwer", "samuel11hoi@gmail.com", "06 12345678", roles, false
+                , 1000L, 1000L);
         return ResponseEntity.status(HttpStatus.OK).body(u);
     }
 
     public ResponseEntity<List<User>> getUsers(@Parameter(in = ParameterIn.QUERY, description = "Search a user by a string" ,schema=@Schema()) @Valid @RequestParam(value = "searchstring", required = false) String searchstring) throws IOException {
         List<User> users = service.getUsers(searchstring);
-//        //TODO: efficient maken
-//        for (User u: users) {
-//            u.setPassword("SECRET");
-//        }
-
         if (users.toArray().length != 0){
             return ResponseEntity.status(HttpStatus.OK).body(users);
         }
