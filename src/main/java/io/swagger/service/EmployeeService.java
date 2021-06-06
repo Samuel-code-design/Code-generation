@@ -3,42 +3,47 @@ package io.swagger.service;
 import io.swagger.model.Role;
 import io.swagger.model.User;
 import io.swagger.model.dto.CreateUserDTO;
-import io.swagger.repository.AccountRepository;
 import io.swagger.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 
 @Service
 public class EmployeeService {
-    //TODO: messages werken niet
-    //todo: responses Httpstatus 200 message (wanneer het goed gaat)
-
-    //TODO: ook savings account aanmaken?
     private final UserRepository repository;
-    private final AccountRepository accountRepository;
     private final AccountService accountService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public EmployeeService(UserRepository repository, AccountRepository accountRepository, AccountService accountService) {
+    public EmployeeService(UserRepository repository, AccountService accountService) {
         this.repository = repository;
-        this.accountRepository = accountRepository;
         this.accountService = accountService;
     }
 
+
     public User createUser(CreateUserDTO body){
-        int MINIMUM_PASSWORD_LENGTH = 6;
+        int MINIMUM_PASSWORD_LENGTH = 7;
+
+
+        //check if a field is not supplied
+        if (body.getUsername() == null || body.getRole() == null || body.getPassword() == null ||
+                body.getEmail() == null || body.getPhone() == null ||body.getDayLimit() == null ||
+                body.getTransactionLimit() == null || body.getFirstName() == null || body.getLastName() == null){
+
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "you have not supplied all the values for creating a user, follow the example");
+        }
 
         //check if the user is valid
-
         if (repository.existsByUsername(body.getUsername())){
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                     "Username is already in use, please try again and choose a different one");
@@ -57,9 +62,10 @@ public class EmployeeService {
         //check if new user is also a customer
         if (body.getRole().contains(Role.ROLE_CUSTOMER)){
             //save the user and generate a CURRENT account
+            repository.save(user);
             accountService.generateCurrentAccountForUser(user);
-//            generateAccountForUser(repository.save(user));
-        } else {
+        }
+        else{
             repository.save(user);
         }
         return user;
@@ -76,7 +82,19 @@ public class EmployeeService {
         }
     }
 
-    public User updateUser(User body) {
+
+    public User updateUser(User body){
+
+        //check if a field is not supplied
+        if (body.getUsername() == null || body.getRoles() == null || body.getPassword() == null
+                || body.getEmail() == null || body.getPhone() == null ||body.getDayLimit() == null
+                || body.getTransactionLimit() == null || body.getFirstName() == null || body.getLastName() == null
+                ||body.getLocked() == null || body.getId()== null){
+
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "you have not supplied all the values for a user, follow the example");
+        }
+
         //get the user with the given id
         User u = repository.findByIdEquals(body.getId());
 
@@ -118,6 +136,8 @@ public class EmployeeService {
         }
     }
 
+
+
     public List<User> getUsers(String searchString) {
         //check if the field is not empty
         if (searchString != null && !searchString.equals("")){
@@ -126,7 +146,7 @@ public class EmployeeService {
 
             //check if a user was found
             if (users.toArray().length == 0){
-                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "No user found");
             }
             return users;
@@ -142,12 +162,11 @@ public class EmployeeService {
     }
 
     public User userById(Long id) {
-        User u = repository.findByIdEquals(id);
-        if (u == null) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+        if (repository.findByIdEquals(id) == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "No User with this id");
         }
-        return u;
+        return repository.findByIdEquals(id);
     }
 
     public User createUserFromDTO(CreateUserDTO body){

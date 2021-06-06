@@ -52,7 +52,6 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
 
 
         Account account = new Account("NL01INHO0000000001", AccountType.CURRENT, 100000.00, 100.00, false, bank);
-        Account customerAccount = new Account("NL01INHO0000000044", AccountType.CURRENT, 100000.00, 100.00, false, bank);
         accountRepository.save(account);
 
         User customer = new User("TestCustomer", passwordEncoder.encode("Wachtwoord1#"), "Serah", "Visser", "serah@gmail.com", "06 12345678",

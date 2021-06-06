@@ -131,7 +131,6 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.30</version>
@@ -144,12 +143,12 @@
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-java</artifactId>
-            <version>6.10.4</version>
+            <version>5.7.0</version>
         </dependency>
         <dependency>
             <groupId>io.cucumber</groupId>
             <artifactId>cucumber-junit</artifactId>
-            <version>6.10.4</version>
+            <version>5.7.0</version>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>

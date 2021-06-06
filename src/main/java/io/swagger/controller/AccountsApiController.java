@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
@@ -55,12 +56,12 @@ public class AccountsApiController implements AccountsApi {
 
     public ResponseEntity<AccountResponseDTO> findAccountByIban(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("iban") String iban) {
         AccountResponseDTO acc = accountService.getAccountByIban(iban);
-        return ResponseEntity.status(HttpStatus.OK).body(acc);
+        return ResponseEntity.status(HttpStatus.FOUND).body(acc);
     }
 
     public ResponseEntity<List<AccountResponseDTO>> findAccountsByUserId(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
         List<AccountResponseDTO> foundAccs = accountService.getAccountsByUserId(userId);
-        return ResponseEntity.status(HttpStatus.OK).body(foundAccs);
+        return ResponseEntity.status(HttpStatus.FOUND).body(foundAccs);
     }
 
     @PreAuthorize("hasRole('EMPLOYEE')")
@@ -73,7 +74,7 @@ public class AccountsApiController implements AccountsApi {
     @PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity updateAccount(@Parameter(in = ParameterIn.DEFAULT, description = "account", required=true, schema=@Schema()) @Valid @RequestBody AccountUpdateDTO body) {
         AccountResponseDTO acc = accountService.updateAccount(body);
-        return ResponseEntity.status(HttpStatus.CREATED).body(acc);
+        return ResponseEntity.status(HttpStatus.OK).body(acc);
     }
 
 }

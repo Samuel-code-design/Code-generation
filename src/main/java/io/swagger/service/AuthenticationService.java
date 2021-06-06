@@ -49,7 +49,7 @@ public class AuthenticationService {
         }
     }
 
-    public String signup(User user) {
+   public String signup(User user) {
         //Checks if username already exists
         if (!userRepository.existsByUsername(user.getUsername())) {
             //Checks if email already exists
