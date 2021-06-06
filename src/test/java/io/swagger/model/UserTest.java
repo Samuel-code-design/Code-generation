@@ -44,18 +44,12 @@ class UserTest {
     }
 
     @Test
-    public void settingPhoneWithNonNumericalValuesShouldThrowException() {
-        Exception exception = assertThrows(IllegalArgumentException.class,
-                () -> user.setPhone("06 a1234567"));
-        assertEquals("Second part must consist of numbers only", exception.getMessage());
-    }
-
-    @Test
     public void settingEmptyUsernameShouldThrowException() {
         Exception exception = assertThrows(IllegalArgumentException.class,
-                () -> user.setUsername(null));
+                () -> user.setUsername(" "));
         assertEquals("Username can not be empty", exception.getMessage());
     }
+
     @Test
     public void settingEmailWithoutAtSignShouldThrowException() {
         Exception exception = assertThrows(IllegalArgumentException.class,

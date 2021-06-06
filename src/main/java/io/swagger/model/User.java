@@ -117,10 +117,11 @@ public class User {
         return phone;
     }
     public void setPhone(String phone) {
-        //remove spaces and check if contains numbers only
-        if (!phone.replaceAll(" ","").matches("[0-9]")){
-            throw new IllegalArgumentException("Second part must consist of numbers only");
-        }
+        //TODO werkt niet
+//        //remove spaces and check if contains numbers only
+//        if (!phone.replaceAll(" ","").matches("[0-9]")){
+//            throw new IllegalArgumentException("Second part must consist of numbers only");
+//        }
         this.phone = phone;
     }
 

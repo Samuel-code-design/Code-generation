@@ -50,12 +50,7 @@ public class UsersApiController implements UsersApi {
     }
 
     public ResponseEntity<User> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "The new user information", required=true, schema=@Schema()) @Valid @RequestBody User body) {
-//        User u = service.updateUser(body);
-        List<Role> roles = new ArrayList<>();
-        roles.add(Role.ROLE_EMPLOYEE);
-
-        User u = new User(1l, "JD0001", "Wachtwoord1#", "Samuel", "brouwer", "samuel11hoi@gmail.com", "06 12345678", roles, false
-                , 1000L, 1000L);
+        User u = service.updateUser(body);
         return ResponseEntity.status(HttpStatus.OK).body(u);
     }
 

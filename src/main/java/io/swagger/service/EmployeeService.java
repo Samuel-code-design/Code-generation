@@ -124,7 +124,7 @@ public class EmployeeService {
 
             //check if a user was found
             if (users.toArray().length == 0){
-                throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "No user found");
             }
             return users;
@@ -140,9 +140,8 @@ public class EmployeeService {
     }
 
     public User userById(Long id) {
-
         if (repository.findByIdEquals(id) == null) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     "No User with this id");
         }
         return repository.findByIdEquals(id);

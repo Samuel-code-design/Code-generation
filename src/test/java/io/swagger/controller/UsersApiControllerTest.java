@@ -51,8 +51,10 @@ class UsersApiControllerTest {
 
     @MockBean
     private EmployeeService service;
+
     private User u;
     private User lockedUser;
+    List<Role> roles;
     private MockMvc mvc;
 
 
@@ -60,7 +62,7 @@ class UsersApiControllerTest {
     public void setup() {
         mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
 
-        List<Role> roles = new ArrayList<>();
+        roles = new ArrayList<>();
         roles.add(Role.ROLE_EMPLOYEE);
 
          u = new User(1L, "JD0001", "Wachtwoord1#", "Samuel", "brouwer", "samuel11hoi@gmail.com", "06 12345678", roles, false
@@ -115,16 +117,6 @@ class UsersApiControllerTest {
         assert (result.getResponse().getContentAsString().contains("true"));
     }
 
-//    @Test
-//    void updateUserShouldReturnStatusOk() throws Exception {
-//        ObjectMapper mapper = new ObjectMapper();
-////        u.setFirstName("test");
-//
-//        given(service.updateUser(u)).willReturn(u);
-//        this.mvc.perform(put("/users").contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .content(mapper.writeValueAsString(u)))
-//                .andExpect(status().isOk());
-//    }
 
     @Test
     void updateUserShouldReturnStatusOk() throws Exception {
