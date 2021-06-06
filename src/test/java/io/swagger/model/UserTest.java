@@ -54,8 +54,8 @@ class UserTest {
 
     @Test
     public void settingEmailWithoutAtSignShouldThrowException() {
-        Exception exception = assertThrows(IllegalArgumentException.class,
+        Exception exception = assertThrows(ResponseStatusException.class,
                 () -> user.setEmail("samuel#gmail.com"));
-        assertEquals("Email must contain the at sign", exception.getMessage());
+        assertEquals("422 UNPROCESSABLE_ENTITY \"Email must contain the at sign\"", exception.getMessage());
     }
 }

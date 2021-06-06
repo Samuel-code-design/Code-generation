@@ -113,7 +113,7 @@ public class User {
         return email;
     }
     public void setEmail(String email) {
-        if (!email.contains("@")) throw new IllegalArgumentException("Email must contain the at sign");
+        if (!email.contains("@")) throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Email must contain the at sign");
         this.email = email;
     }
 
