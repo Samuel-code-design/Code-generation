@@ -54,10 +54,12 @@ public class TransactionService {
                         "The account which is sending the money is not from you.");
         }
 
+        //get accountFrom
         Account accountFrom = accountRepository.findOneByIban(transaction.getAccountFrom());
         if(accountFrom == null)
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                     "The account which is sending the money does not exists.");
+        //get accountTo
         Account accountTo = accountRepository.findOneByIban(transaction.getAccountTo());
         if(accountTo == null)
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
@@ -73,33 +75,38 @@ public class TransactionService {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                     "You can only send to your own saving accounts.");
 
-
+        //check als amount niet de transactie limiet overschrijd
         if(perfUser.getTransactionLimit() < transaction.getAmount())
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                     "Transaction amount exceeds transaction limit.");
 
+        //check als er genoeg geld op accountFroms staat
         if(accountFrom.getAbsoluteLimit() > (accountFrom.getBalance() - transaction.getAmount()))
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                     "Transaction will make the balance of accountFrom under the absolute limit.");
 
         //check als de daily limit niet overschreven wordt
         LocalDateTime localDateTimeNow = LocalDateTime.of(LocalDate.now(), LocalTime.MIDNIGHT);
-        List<Transaction> transactionsToday = transactionRepository.findAllByTimestampBetween(
-                localDateTimeNow, localDateTimeNow.plusDays(1));
+        double spendBalanceToday = getSpendBalanceToday(transactionRepository.findAllByTimestampBetween(
+                localDateTimeNow, localDateTimeNow.plusDays(1))) + transaction.getAmount();
+        if(spendBalanceToday > accountFrom.getUser().getDayLimit())
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "Transaction will go over the daily transaction limit.");
+
+        //perform the transaction and save in db
+        accountService.updateBalance(transaction.getAmount(), accountTo.getIban());
+        accountService.updateBalance((-1 * transaction.getAmount()), accountFrom.getIban());
+        transactionRepository.save(transaction);
+    }
+
+    private double getSpendBalanceToday(List<Transaction> transactionsToday){
         double spendBalanceToday = 0;
         if(!transactionsToday.isEmpty()){
             for (Transaction trans : transactionsToday) {
                 spendBalanceToday =  spendBalanceToday + trans.getAmount();
             }
         }
-        spendBalanceToday = spendBalanceToday + transaction.getAmount();
-        if(spendBalanceToday > accountFrom.getUser().getDayLimit())
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
-                    "Transaction will go over the daily transaction limit.");
-
-        accountService.updateBalance(transaction.getAmount(), accountTo.getIban());
-        accountService.updateBalance((-1 * transaction.getAmount()), accountFrom.getIban());
-        transactionRepository.save(transaction);
+        return spendBalanceToday;
     }
 
     public List<Transaction> getAllTransactions() {

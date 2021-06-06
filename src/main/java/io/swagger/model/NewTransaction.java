@@ -2,8 +2,12 @@ package io.swagger.model;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import io.cucumber.java.en_old.Ac;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
@@ -41,6 +45,17 @@ public class NewTransaction   {
 
   @JsonProperty("performingUser")
   private Long performingUser = null;
+
+  public NewTransaction() {
+  }
+
+  public NewTransaction(Double amount, LocalDateTime timestamp, String accountFrom, String accountTo, Long performingUser) {
+    this.amount = amount;
+    this.timestamp = timestamp;
+    this.accountFrom = accountFrom;
+    this.accountTo = accountTo;
+    this.performingUser = performingUser;
+  }
 
   public NewTransaction amount(Double amount) {
     this.amount = amount;

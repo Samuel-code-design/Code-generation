@@ -10,7 +10,5 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Integer> {
-    List<Transaction> findAllByTimestampAfter(LocalDateTime timeStamp);
-
-    List<Transaction> findAllByTimestampBetween(LocalDateTime start, LocalDateTime end);
+      List<Transaction> findAllByTimestampBetween(LocalDateTime start, LocalDateTime end);
 }
