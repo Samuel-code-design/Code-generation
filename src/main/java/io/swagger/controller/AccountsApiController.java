@@ -58,14 +58,14 @@ public class AccountsApiController implements AccountsApi {
 
     public ResponseEntity<AccountResponseDTO> findAccountByIban(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("iban") String iban) {
         AccountResponseDTO acc = accountService.getAccountByIban(iban);
-        return ResponseEntity.status(HttpStatus.FOUND).body(acc);
+        return ResponseEntity.status(HttpStatus.OK).body(acc);
     }
 
     public ResponseEntity<List<AccountResponseDTO>> findAccountsByUserId(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String userName = authentication.getName();
         List<AccountResponseDTO> foundAccs = accountService.getAccountsByUserId(userId, userName);
-        return ResponseEntity.status(HttpStatus.FOUND).body(foundAccs);
+        return ResponseEntity.status(HttpStatus.OK).body(foundAccs);
     }
 
     @PreAuthorize("hasRole('EMPLOYEE')")
@@ -75,9 +75,10 @@ public class AccountsApiController implements AccountsApi {
 
     }
 
-    @PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity updateAccount(@Parameter(in = ParameterIn.DEFAULT, description = "account", required=true, schema=@Schema()) @Valid @RequestBody AccountUpdateDTO body) {
-        AccountResponseDTO acc = accountService.updateAccount(body);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+        AccountResponseDTO acc = accountService.updateAccount(body, userName);
         return ResponseEntity.status(HttpStatus.OK).body(acc);
     }
 

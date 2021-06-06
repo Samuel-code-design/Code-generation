@@ -26,6 +26,9 @@ public class AccountResponseDTO {
     @JsonProperty("owner name")
     private String userName;
 
+    @JsonProperty("currency")
+    private String currency;
+
     public AccountResponseDTO(String iban, AccountType type, Double balance, Double absoluteLimit, Boolean locked, Long userId, String userName) {
         this.iban = iban;
         this.type = type;
@@ -34,6 +37,7 @@ public class AccountResponseDTO {
         this.locked = locked;
         this.userId = userId;
         this.userName = userName;
+        this.currency = "EURO";
     }
 
     public String getIban() {

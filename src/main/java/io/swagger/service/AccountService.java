@@ -86,6 +86,9 @@ public class AccountService {
 
 
     public AccountResponseDTO getAccountByIban(String iban){
+        if(iban.equals("NL01INHO0000000001")){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Cannot access the bank's account");
+        }
         if(accountRepository.existsByiban(iban)){
             Account acc =  accountRepository.findOneByIban(iban);
             return accountToResponseDTO(acc);
@@ -95,6 +98,9 @@ public class AccountService {
     }
 
     public List<AccountResponseDTO> getAccountsByUserId(Long userId, String userName){
+        if (userId == 1){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Cannot access the bank's account");
+        }
         User u = userRepository.findByUsername(userName);
         if(!u.getRoles().contains(Role.ROLE_EMPLOYEE)){
             if(userId != u.getId()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "user Id must match id of logged in user");
@@ -112,11 +118,24 @@ public class AccountService {
 
     public List<AccountResponseDTO> getAllAccounts(){
         List<Account> accounts = accountRepository.findAll();
+        //Remove bank account from list
+        accounts.remove(0);
         return accountToResponseDTOList(accounts);
     }
 
-    public AccountResponseDTO updateAccount(AccountUpdateDTO account){
+    public AccountResponseDTO updateAccount(AccountUpdateDTO account, String username){
+        if (!accountRepository.existsByiban(account.getIban())){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "IBAN does not exist");
+        }
+
         Account acc = accountRepository.findOneByIban(account.getIban());
+        User user = userRepository.findByUsername(username);
+        if(!user.getRoles().contains(Role.ROLE_EMPLOYEE)){
+            if(!acc.getUser().getId().equals(user.getId())) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "IBAN does not match logged in user");
+        }
+        if(acc.getIban().equals("NL01INHO0000000001")){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Cannot access the bank's account");
+        }
         if(userRepository.existsByid(account.getUserId())){
             acc.setAbsoluteLimit(account.getAbsoluteLimit());
             acc.setType(account.getType());
@@ -126,6 +145,7 @@ public class AccountService {
         }else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "There is no user for this userId");
         }
+
 
         accountRepository.save(acc);
         return accountToResponseDTO(acc);
@@ -144,6 +164,9 @@ public class AccountService {
     }
 
     public AccountResponseDTO lockAccountByIban(String iban){
+        if(iban.equals("NL01INHO0000000001")){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Cannot access the bank's account");
+        }
         if(accountRepository.existsByiban(iban)){
             Account acc = accountRepository.findOneByIban(iban);
             acc.setLocked(true);

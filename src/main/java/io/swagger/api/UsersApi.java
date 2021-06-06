@@ -5,7 +5,6 @@
  */
 package io.swagger.api;
 
-import io.swagger.model.InlineResponse400;
 import io.swagger.model.dto.CreateUserDTO;
 import io.swagger.model.User;
 import io.swagger.v3.oas.annotations.Operation;

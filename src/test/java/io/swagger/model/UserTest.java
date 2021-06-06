@@ -2,6 +2,8 @@ package io.swagger.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,9 +47,9 @@ class UserTest {
 
     @Test
     public void settingEmptyUsernameShouldThrowException() {
-        Exception exception = assertThrows(IllegalArgumentException.class,
+        Exception exception = assertThrows(ResponseStatusException.class,
                 () -> user.setUsername(" "));
-        assertEquals("Username can not be empty", exception.getMessage());
+        assertEquals( "422 UNPROCESSABLE_ENTITY \"Username can not be empty\"", exception.getMessage());
     }
 
     @Test

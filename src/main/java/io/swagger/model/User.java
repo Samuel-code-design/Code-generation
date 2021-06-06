@@ -1,6 +1,8 @@
 package io.swagger.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -76,7 +78,8 @@ public class User {
     }
     public void setUsername(String username) {
         if (username.trim().isEmpty() || username == null){
-            throw new IllegalArgumentException("Username can not be empty");
+           // throw new IllegalArgumentException("Username can not be empty");
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Username can not be empty");
         }
         this.username = username;
     }

@@ -73,6 +73,10 @@ public class EmployeeService {
 
     public User lockUserById(Long id) {
         User u = userById(id);
+        if(id == 1){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "Can not lock bank");
+        }
         if (u.getLocked().equals(true)) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                     "User is already locked");
@@ -93,6 +97,10 @@ public class EmployeeService {
 
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                     "you have not supplied all the values for a user, follow the example");
+        }
+
+        if (body.getId() == 1){
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "Cannot update the bank");
         }
 
         //get the user with the given id

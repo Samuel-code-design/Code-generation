@@ -56,7 +56,7 @@ class AccountsApiControllerTest {
         roles.add(Role.ROLE_EMPLOYEE);
 
         u = new User("JulieMeij", "1234567", "Julie", "van der Meij", "juliemeij@gmail.com", "06 12345678",
-                roles, false, true, 1000L, 1000L);
+                roles, false,  1000L, 1000L);
 
         account = new Account("NL02INHO0987654321", AccountType.CURRENT, 0.0, 0.0, false, u);
 
@@ -82,15 +82,15 @@ class AccountsApiControllerTest {
     }
 
     @Test
-    void findAccountByIbanShouldReturnFOUND() throws Exception {
+    void findAccountByIbanShouldReturnOK() throws Exception {
         this.mvc.perform(get("/account/NL02INHO0987654321"))
-                .andExpect(status().isFound());
+                .andExpect(status().isOk());
     }
 
     @Test
-    void findAccountsByUserIdShouldReturnFOUND() throws Exception{
+    void findAccountsByUserIdShouldReturnOK() throws Exception{
         this.mvc.perform(get("/accounts/1"))
-                .andExpect(status().isFound());
+                .andExpect(status().isOk());
     }
 
     @Test
