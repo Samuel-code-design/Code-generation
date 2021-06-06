@@ -3,14 +3,12 @@ import io.swagger.model.Account;
 import io.swagger.model.AccountType;
 import io.swagger.model.Role;
 import io.swagger.model.User;
-
-import io.swagger.service.AccountService;
-
-import io.swagger.model.dto.CreateUserDTO;
+import io.swagger.repository.AccountRepository;
 import io.swagger.repository.UserRepository;
-
+import io.swagger.service.AccountService;
 import io.swagger.service.AuthenticationService;
 import io.swagger.service.EmployeeService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -21,41 +19,47 @@ import java.util.List;
 @Component
 public class ApplicationRunner implements org.springframework.boot.ApplicationRunner {
 
-    private AuthenticationService service;
-    private EmployeeService employeeService;
-    private UserRepository repository;
-    PasswordEncoder encoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
+    private UserRepository userRepository;
 
+    private AccountRepository accountRepository;
 
-    public ApplicationRunner(AuthenticationService service, EmployeeService employeeService, UserRepository repository, PasswordEncoder encoder) {
-        this.service = service;
-        this.employeeService = employeeService;
-        this.repository = repository;
-        this.encoder = encoder;
+    private AuthenticationService authenticationService;
+
+    public ApplicationRunner(UserRepository userRepository, AccountRepository accountRepository, AuthenticationService authenticationService) {
+        this.userRepository = userRepository;
+        this.accountRepository = accountRepository;
+        this.authenticationService = authenticationService;
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
         List<Role> roles = new ArrayList<>();
         roles.add(Role.ROLE_EMPLOYEE);
+        List<Role> role = new ArrayList<>();
+        roles.add(Role.ROLE_CUSTOMER);
 
-        User u = new User(1L, "JD0001", "Wachtwoord1#", "Samuel", "brouwer", "samuel11hoi@gmail.com", "06 12345678", roles, false
-                , 1000L, 1000L);
 
-        User bank = new User("bank", "1234567", "bank", "bank", "bak@gmail.com", "06 12345678",
-                roles, false, true, 1000L, 1000L);
-        service.signup(bank);
+        User bank = new User("bank", passwordEncoder.encode("Wachtwoord!1"), "bank", "bank", "bak@gmail.com", "06 12345678",
+                roles, false,  1000L, 1000L);
+        userRepository.save(bank);
 
-        u.setPassword(encoder.encode(u.getPassword()));
-        repository.save(u);;
-
-        User bank = new User("bank", "hehehhehehehee", "bank", "bank", "bak@gmail.com", "06 12345678",
+        User u = new User("JD0001", passwordEncoder.encode("Wachtwoord1#"), "Samuel", "brouwer", "samuel11hoi@gmail.com", "06 12345678",
                 roles, false, 1000L, 1000L);
-        service.signup(bank);
+        userRepository.save(u);
+
+
         Account account = new Account("NL01INHO0000000001", AccountType.CURRENT, 100000.00, 100.00, false, bank);
-            
+        accountRepository.save(account);
+
+        User customer = new User("TestCustomer", passwordEncoder.encode("Wachtwoord1#"), "Serah", "Visser", "serah@gmail.com", "06 12345678",
+                role, false, 1000L, 1000L);
+
+        authenticationService.signup(customer);
     }
+
 
 }
 

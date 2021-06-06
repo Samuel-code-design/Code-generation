@@ -28,6 +28,7 @@ public class User {
     private Long dayLimit;
     private Long transactionLimit;
 
+
     public User(Long id, String username, String password, String firstName, String lastName, String email, String phone, List<Role> roles, Boolean locked, Long dayLimit, Long transactionLimit) {
         this.id = id;
         this.username = username;
@@ -41,6 +42,7 @@ public class User {
         this.dayLimit = dayLimit;
         this.transactionLimit = transactionLimit;
     }
+
 
     public User(String username, String password, String firstName, String lastName, String email, String phone, List<Role> roles, Boolean locked, Long dayLimit, Long transactionLimit) {
         this.username = username;
@@ -117,11 +119,6 @@ public class User {
         return phone;
     }
     public void setPhone(String phone) {
-        //TODO werkt niet
-//        //remove spaces and check if contains numbers only
-//        if (!phone.replaceAll(" ","").matches("[0-9]")){
-//            throw new IllegalArgumentException("Second part must consist of numbers only");
-//        }
         this.phone = phone;
     }
 
