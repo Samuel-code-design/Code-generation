@@ -40,4 +40,14 @@ class LoginApiControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    void wrongLoginUserShouldReturnError() throws Exception {
+        LoginDTO wrongLogin = new LoginDTO("test", "Wachtwoord1#");
+        ObjectMapper mapper = new ObjectMapper();
+        this.mvc.perform(post("/login")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(mapper.writeValueAsString(wrongLogin)))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
 }

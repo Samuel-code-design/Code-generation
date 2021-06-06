@@ -25,16 +25,10 @@ public class RegisterDTO {
 
     @Schema(example = "JD0001", description = "")
     public String getUsername() {
-        if (username.trim().isEmpty() || username == null){
-            throw new IllegalArgumentException("Username should not be empty");
-        }
         return username;
     }
 
     public void setUsername(String username) {
-        if (username.trim().isEmpty() || username == null){
-            throw new IllegalArgumentException("Username should not be empty");
-        }
         this.username = username;
     }
 
@@ -42,16 +36,10 @@ public class RegisterDTO {
         @NotNull
 
     public String getPassword() {
-        if (password.trim().isEmpty() || password == null){
-            throw new IllegalArgumentException("Password should not be empty");
-        }
         return password;
     }
 
     public void setPassword(String password) {
-        if (password.trim().isEmpty() || password == null){
-            throw new IllegalArgumentException("Password should not be empty");
-        }
         this.password = password;
     }
 
@@ -60,16 +48,10 @@ public class RegisterDTO {
         @NotNull
 
     public String getFirstName() {
-        if (firstName.trim().isEmpty() || firstName == null){
-            throw new IllegalArgumentException("Firstname should not be empty");
-        }
         return firstName;
     }
 
     public void setFirstName(String firstName) {
-        if (firstName.trim().isEmpty() || firstName == null){
-            throw new IllegalArgumentException("Firstname should not be empty");
-        }
         this.firstName = firstName;
     }
 
@@ -77,16 +59,10 @@ public class RegisterDTO {
         @NotNull
 
     public String getLastName() {
-        if (lastName.trim().isEmpty() || lastName == null){
-            throw new IllegalArgumentException("Lastname should not be empty");
-        }
         return lastName;
     }
 
     public void setLastName(String lastName) {
-        if (lastName.trim().isEmpty() || lastName == null){
-            throw new IllegalArgumentException("Lastname should not be empty");
-        }
         this.lastName = lastName;
     }
 
@@ -94,16 +70,10 @@ public class RegisterDTO {
         @NotNull
 
     public String getEmail() {
-        if (email.trim().isEmpty() || email == null){
-            throw new IllegalArgumentException("Email should not be empty");
-        }
         return email;
     }
 
     public void setEmail(String email) {
-        if (email.trim().isEmpty() || email == null){
-            throw new IllegalArgumentException("Email should not be empty");
-        }
         this.email = email;
     }
 
@@ -111,16 +81,10 @@ public class RegisterDTO {
         @NotNull
 
     public String getPhone() {
-        if (phone.trim().isEmpty() || phone == null){
-            throw new IllegalArgumentException("Phone should not be empty");
-        }
         return phone;
     }
 
     public void setPhone(String phone) {
-        if (phone.trim().isEmpty() || phone == null){
-            throw new IllegalArgumentException("Phone should not be empty");
-        }
         this.phone = phone;
     }
 }
