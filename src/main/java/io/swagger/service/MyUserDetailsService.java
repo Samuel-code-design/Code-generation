@@ -24,11 +24,11 @@ public class MyUserDetailsService implements UserDetailsService {
                 .password(user.getPassword())
                 .authorities(user.getRoles())
                 .accountExpired(false)
-                .accountLocked(false)
+                .accountLocked(user.getLocked())
                 .credentialsExpired(false)
                 .disabled(false)
                 .build();
-
         return userDetails;
     }
+
 }

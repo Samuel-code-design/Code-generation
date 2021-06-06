@@ -1,13 +1,10 @@
 package io.swagger.security;
 
 import io.swagger.security.jwt.JwtTokenFilter;
-import io.swagger.service.MyUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -16,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -46,9 +44,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
         http.authorizeRequests()
                 .antMatchers(AUTH_WHITELIST).permitAll()
-                .antMatchers("/Accounts/**").hasRole("EMPLOYEE")
-                .antMatchers("/users/**").hasRole("EMPLOYEE")
-                .antMatchers("/Accounts/userId/**").hasAnyRole("CUSTOMER", "EMPLOYEE")
+//                .antMatchers("/Accounts/**").hasRole("EMPLOYEE")
+//                .antMatchers("/users/**").hasRole("EMPLOYEE")
+//                .antMatchers("/Accounts/userId/**").hasAnyRole("CUSTOMER", "EMPLOYEE")
                 .anyRequest().authenticated();
     }
 

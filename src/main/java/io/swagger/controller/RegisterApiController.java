@@ -26,8 +26,6 @@ public class RegisterApiController implements RegisterApi {
 
     private static final Logger log = LoggerFactory.getLogger(RegisterApiController.class);
 
-    private final ObjectMapper objectMapper;
-
     private final HttpServletRequest request;
 
     @Autowired
@@ -37,14 +35,13 @@ public class RegisterApiController implements RegisterApi {
     private AuthenticationService authenticationService;
 
     @org.springframework.beans.factory.annotation.Autowired
-    public RegisterApiController(ObjectMapper objectMapper, HttpServletRequest request) {
-        this.objectMapper = objectMapper;
+    public RegisterApiController(HttpServletRequest request) {
         this.request = request;
     }
 
     public ResponseEntity<String> registerUser(@Parameter(in = ParameterIn.DEFAULT, description = "register customer user", schema=@Schema()) @Valid @RequestBody RegisterDTO body) {
         String message = authenticationService.signup(modelMapper.map(body, User.class));
-        return new ResponseEntity<String>(message, HttpStatus.OK);
+        return new ResponseEntity<String>(message, HttpStatus.CREATED);
     }
 
 }
