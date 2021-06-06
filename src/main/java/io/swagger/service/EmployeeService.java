@@ -31,6 +31,8 @@ public class EmployeeService {
 
 
     public User createUser(CreateUserDTO body){
+        int MINIMUM_PASSWORD_LENGTH = 7;
+
 
         //check if a field is not supplied
         if (body.getUsername() == null || body.getRole() == null || body.getPassword() == null ||
@@ -40,9 +42,6 @@ public class EmployeeService {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                     "you have not supplied all the values for creating a user, follow the example");
         }
-
-
-        int MINIMUM_PASSWORD_LENGTH = 7;
 
         //check if the user is valid
         if (repository.existsByUsername(body.getUsername())){
