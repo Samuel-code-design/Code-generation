@@ -19,7 +19,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.web.server.ResponseStatusException;
-
+import org.assertj.core.api.AbstractAssert;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -47,7 +47,7 @@ class AuthenticationServiceTest {
 
         assertThatThrownBy(() -> authenticationService.signup(modelMapper.map(registerDTO, User.class))
                .contains("Email already in use, please try again and choose a different one"));
-       // verify(userRepository, never()).save(any());
+        verify(userRepository, never()).save(any());
 
     }
     @Test
@@ -58,7 +58,7 @@ class AuthenticationServiceTest {
 
         assertThatThrownBy(() -> authenticationService.signup(modelMapper.map(registerDTO, User.class))
                 .contains("Username is already in use, please try again and choose a different one"));
-       // verify(userRepository, never()).save(any());
+        verify(userRepository, never()).save(any());
 
     }
     @Test
@@ -67,7 +67,7 @@ class AuthenticationServiceTest {
                 "JohnDoe@gmail.com", "06 12345678");
 
         assertThatThrownBy(() -> authenticationService.signup(modelMapper.map(registerDTO, User.class)).contains("Password length to short, minimum length 7"));
-       // verify(userRepository, never()).save(any());
+        verify(userRepository, never()).save(any());
     }
 
 }

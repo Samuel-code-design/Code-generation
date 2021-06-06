@@ -27,11 +27,10 @@ public class User {
     private List<Role> roles;
 
     private Boolean locked = false;
-    private Boolean enabled = true;
     private Long dayLimit;
     private Long transactionLimit;
 
-    public User(String username, String password, String firstName, String lastName, String email, String phone, List<Role> roles, Boolean locked, Boolean enabled, Long dayLimit, Long transactionLimit) {
+    public User(String username, String password, String firstName, String lastName, String email, String phone, List<Role> roles, Boolean locked, Long dayLimit, Long transactionLimit) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
@@ -40,7 +39,6 @@ public class User {
         this.phone = phone;
         this.roles = roles;
         this.locked = locked;
-        this.enabled = enabled;
         this.dayLimit = dayLimit;
         this.transactionLimit = transactionLimit;
     }
@@ -118,14 +116,6 @@ public class User {
     }
     public void setLocked(Boolean locked) {
         this.locked = locked;
-    }
-
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
     }
 
     @Schema(example = "1000", description = "")

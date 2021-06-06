@@ -6,6 +6,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.swagger.model.dto.LoginDTO;
 import org.junit.Assert;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -18,7 +19,7 @@ import java.net.URISyntaxException;
 public class LoginSteps {
 
     private HttpHeaders headers = new HttpHeaders();
-    private String baseUrl = "https://localhost:8080/api/login";
+    private String baseUrl = "https://localhost:8080/api/login/";
     private RestTemplate template = new RestTemplate();
     private ResponseEntity<String> responseEntity;
 
