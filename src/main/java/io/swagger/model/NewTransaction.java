@@ -2,10 +2,18 @@ package io.swagger.model;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import io.cucumber.java.en_old.Ac;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.threeten.bp.OffsetDateTime;
 import org.springframework.validation.annotation.Validated;
 
@@ -24,24 +32,32 @@ import javax.validation.constraints.*;
 @MappedSuperclass
 public class NewTransaction   {
   @JsonProperty("amount")
-  private Long amount = null;
+  private Double amount = null;
 
   @JsonProperty("timestamp")
   private LocalDateTime timestamp = null;
 
   @JsonProperty("accountFrom")
-  @ManyToOne(targetEntity = Account.class)
   private String accountFrom = null;
 
   @JsonProperty("accountTo")
-  @ManyToOne(targetEntity = Account.class)
   private String accountTo = null;
 
   @JsonProperty("performingUser")
-  @ManyToOne(targetEntity = User.class)
   private Long performingUser = null;
 
-  public NewTransaction amount(Long amount) {
+  public NewTransaction() {
+  }
+
+  public NewTransaction(Double amount, LocalDateTime timestamp, String accountFrom, String accountTo, Long performingUser) {
+    this.amount = amount;
+    this.timestamp = timestamp;
+    this.accountFrom = accountFrom;
+    this.accountTo = accountTo;
+    this.performingUser = performingUser;
+  }
+
+  public NewTransaction amount(Double amount) {
     this.amount = amount;
     return this;
   }
@@ -54,11 +70,13 @@ public class NewTransaction   {
       @NotNull
 
     @Valid
-    public Long getAmount() {
-    return amount;
+    public Double getAmount() {
+      return amount;
   }
 
-  public void setAmount(Long amount) {
+  public void setAmount(Double amount) {
+    if (amount < 0.01)
+      throw new IllegalArgumentException("Amount cannot be negative.");
     this.amount = amount;
   }
 
@@ -100,6 +118,10 @@ public class NewTransaction   {
   }
 
   public void setAccountFrom(String accountFrom) {
+    if(accountFrom.equals("NL01INHO0000000001"))
+      throw new IllegalArgumentException("Transactions to or from are prohibited.");
+    if(accountFrom == accountTo)
+      throw new IllegalArgumentException("Transactions cannot go to the same account.");
     this.accountFrom = accountFrom;
   }
 
@@ -120,6 +142,8 @@ public class NewTransaction   {
   }
 
   public void setAccountTo(String accountTo) {
+    if(accountTo.equals("NL01INHO0000000001"))
+      throw new IllegalArgumentException("Transactions to or from are prohibited.");
     this.accountTo = accountTo;
   }
 
