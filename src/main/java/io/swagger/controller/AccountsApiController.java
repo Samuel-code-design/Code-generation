@@ -28,7 +28,7 @@ import java.util.*;
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-05-17T12:11:50.256Z[GMT]")
 @RestController
 public class AccountsApiController implements AccountsApi {
-    //TO DO search by username
+
     @Autowired
     private AccountService accountService;
 
