@@ -12,6 +12,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
@@ -57,7 +59,9 @@ public class AccountsApiController implements AccountsApi {
     }
 
     public ResponseEntity<List<AccountResponseDTO>> findAccountsByUserId(@Parameter(in = ParameterIn.PATH, description = "", required=true, schema=@Schema()) @PathVariable("userId") Long userId) {
-        List<AccountResponseDTO> foundAccs = accountService.getAccountsByUserId(userId);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = authentication.getName();
+        List<AccountResponseDTO> foundAccs = accountService.getAccountsByUserId(userId, userName);
         return ResponseEntity.status(HttpStatus.FOUND).body(foundAccs);
     }
 

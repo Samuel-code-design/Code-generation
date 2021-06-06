@@ -2,6 +2,7 @@ package io.swagger.service;
 
 import io.swagger.model.Account;
 import io.swagger.model.AccountType;
+import io.swagger.model.Role;
 import io.swagger.model.User;
 import io.swagger.model.dto.AccountCreateDTO;
 import io.swagger.model.dto.AccountResponseDTO;
@@ -93,7 +94,12 @@ public class AccountService {
         }
     }
 
-    public List<AccountResponseDTO> getAccountsByUserId(Long userId){
+    public List<AccountResponseDTO> getAccountsByUserId(Long userId, String userName){
+        User u = userRepository.findByUsername(userName);
+        if(!u.getRoles().contains(Role.ROLE_EMPLOYEE)){
+            if(userId != u.getId()) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "user Id must match id of logged in user");
+        }
+
         if(!userRepository.existsByid(userId)){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No user with this id");
         }else if(!accountRepository.existsByuserId(userId)){
