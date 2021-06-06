@@ -32,6 +32,14 @@ public class EmployeeSteps {
         responseEntity = template.getForEntity(uri, String.class);
     }
 
+    @Then("i get a list of {int} users")
+    public void iGetAListOfUsers(int expectedSize) throws JSONException {
+        String response = responseEntity.getBody();
+        JSONArray array = new JSONArray(response);
+        int actualSize = array.length();
+        Assert.assertEquals(actualSize, expectedSize);
+    }
+
     @When("i retrieve a user with id {int}")
     public void iRetrieveAUserWithId(int id) throws URISyntaxException {
         URI uri = new URI(baseUrl + "users/" + id);
@@ -45,14 +53,7 @@ public class EmployeeSteps {
         Assert.assertEquals(status, response);
     }
 
-    //TODO: long?
-    @Then("i get a list of {int} users")
-    public void iGetAListOfUsers(int expectedSize) throws JSONException {
-        String response = responseEntity.getBody();
-        JSONArray array = new JSONArray(response);
-        int actualSize = array.length();
-        Assert.assertEquals(actualSize, expectedSize);
-    }
+
 
     @Then("is de username {string}")
     public void isDeUsername(String username) throws JSONException {

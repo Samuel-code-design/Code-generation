@@ -55,6 +55,8 @@ class UsersApiControllerTest {
     private User u;
     private User lockedUser;
     List<Role> roles;
+
+    @Autowired
     private MockMvc mvc;
 
 

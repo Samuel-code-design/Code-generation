@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
@@ -40,7 +41,9 @@ public class UsersApiController implements UsersApi {
     }
 
     public ResponseEntity<User> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "New user body", required=true, schema=@Schema()) @Valid @RequestBody CreateUserDTO body) {
+
         User u = service.createUser(body);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(u);
     }
 

@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 
@@ -28,7 +29,19 @@ public class EmployeeService {
         this.accountService = accountService;
     }
 
+
     public User createUser(CreateUserDTO body){
+
+        //check if a field is not supplied
+        if (body.getUsername() == null || body.getRole() == null || body.getPassword() == null ||
+                body.getEmail() == null || body.getPhone() == null ||body.getDayLimit() == null ||
+                body.getTransactionLimit() == null || body.getFirstName() == null || body.getLastName() == null){
+
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "you have not supplied all the values for creating a user, follow the example");
+        }
+
+
         int MINIMUM_PASSWORD_LENGTH = 7;
 
         //check if the user is valid
@@ -70,8 +83,18 @@ public class EmployeeService {
         }
     }
 
-    //TODO: werkt opeens niet meer
-    public User updateUser(User body) {
+
+    public User updateUser(User body){
+
+        //check if a field is not supplied
+        if (body.getUsername() == null || body.getRoles() == null || body.getPassword() == null
+                || body.getEmail() == null || body.getPhone() == null ||body.getDayLimit() == null
+                || body.getTransactionLimit() == null || body.getFirstName() == null || body.getLastName() == null
+                ||body.getLocked() == null || body.getId()== null){
+
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
+                    "you have not supplied all the values for a user, follow the example");
+        }
 
         //get the user with the given id
         User u = repository.findByIdEquals(body.getId());
