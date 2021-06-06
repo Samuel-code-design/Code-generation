@@ -22,20 +22,20 @@ public class CreateUserDTO {
     private Long transactionLimit;
 
 
-
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<Role> roles;
-
-    public CreateUserDTO(String username, String password, String firstName, String lastName, String email, String phone, List<Role> roles) {
+    public CreateUserDTO(String username, String password, String firstName, String lastName, String email, String phone, Long dayLimit, Long transactionLimit, List<Role> roles) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.phone = phone;
+        this.dayLimit = dayLimit;
+        this.transactionLimit = transactionLimit;
         this.roles = roles;
     }
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    private List<Role> roles;
 
     public List<Role> getRole() {
         return roles;

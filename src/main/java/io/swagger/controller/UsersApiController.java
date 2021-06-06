@@ -1,6 +1,7 @@
 package io.swagger.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.api.UsersApi;
+import io.swagger.model.Role;
 import io.swagger.model.dto.CreateUserDTO;
 import io.swagger.model.User;
 import io.swagger.service.EmployeeService;
@@ -12,10 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.SpringCodegen", date = "2021-05-17T12:11:50.256Z[GMT]")
@@ -38,8 +41,10 @@ public class UsersApiController implements UsersApi {
     }
 
     public ResponseEntity<User> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "New user body", required=true, schema=@Schema()) @Valid @RequestBody CreateUserDTO body) {
+
         User u = service.createUser(body);
-        return ResponseEntity.status(HttpStatus.OK).body(u);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(u);
     }
 
     public ResponseEntity<User> lockUserById(@Parameter(in = ParameterIn.PATH, description = "The userID", required=true, schema=@Schema()) @PathVariable("id") Long id) {
@@ -54,11 +59,6 @@ public class UsersApiController implements UsersApi {
 
     public ResponseEntity<List<User>> getUsers(@Parameter(in = ParameterIn.QUERY, description = "Search a user by a string" ,schema=@Schema()) @Valid @RequestParam(value = "searchstring", required = false) String searchstring) throws IOException {
         List<User> users = service.getUsers(searchstring);
-//        //TODO: efficient maken
-//        for (User u: users) {
-//            u.setPassword("SECRET");
-//        }
-
         if (users.toArray().length != 0){
             return ResponseEntity.status(HttpStatus.OK).body(users);
         }
@@ -67,7 +67,6 @@ public class UsersApiController implements UsersApi {
 
     public ResponseEntity<User> userById(@Parameter(in = ParameterIn.PATH, description = "the userID", required=true, schema=@Schema()) @PathVariable("id") Long id) throws IOException {
         User user = service.userById(id);
-//        user.setPassword("SECRET");
         return ResponseEntity.status(HttpStatus.OK).body(user);
     }
 }

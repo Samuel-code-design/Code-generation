@@ -1,12 +1,10 @@
 package io.swagger.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.model.Role;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
+import java.lang.reflect.Array;
 import java.util.List;
 
 @Entity
@@ -27,11 +25,11 @@ public class User {
     private List<Role> roles;
 
     private Boolean locked = false;
-    private Boolean enabled = true;
     private Long dayLimit;
     private Long transactionLimit;
 
-    public User(String username, String password, String firstName, String lastName, String email, String phone, List<Role> roles, Boolean locked, Boolean enabled, Long dayLimit, Long transactionLimit) {
+    public User(Long id, String username, String password, String firstName, String lastName, String email, String phone, List<Role> roles, Boolean locked, Long dayLimit, Long transactionLimit) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.firstName = firstName;
@@ -40,19 +38,33 @@ public class User {
         this.phone = phone;
         this.roles = roles;
         this.locked = locked;
-        this.enabled = enabled;
+        this.dayLimit = dayLimit;
+        this.transactionLimit = transactionLimit;
+    }
+
+    public User(String username, String password, String firstName, String lastName, String email, String phone, List<Role> roles, Boolean locked, Long dayLimit, Long transactionLimit) {
+        this.username = username;
+        this.password = password;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phone = phone;
+        this.roles = roles;
+        this.locked = locked;
         this.dayLimit = dayLimit;
         this.transactionLimit = transactionLimit;
     }
 
     public User(){
     }
+
     @Schema(example = "1", description = "")
     @NotNull
     public Long getId() {
         return id;
     }
     public void setId(Long id) {
+        if (id != null && id < 0) throw new IllegalArgumentException("Cannot be lower than zero");
         this.id = id;
     }
 
@@ -61,7 +73,9 @@ public class User {
         return username;
     }
     public void setUsername(String username) {
-        if (username == "" || username == null) throw new IllegalArgumentException("Username can not be empty");
+        if (username.trim().isEmpty() || username == null){
+            throw new IllegalArgumentException("Username can not be empty");
+        }
         this.username = username;
     }
 
@@ -94,6 +108,7 @@ public class User {
         return email;
     }
     public void setEmail(String email) {
+        if (!email.contains("@")) throw new IllegalArgumentException("Email must contain the at sign");
         this.email = email;
     }
 
@@ -102,6 +117,11 @@ public class User {
         return phone;
     }
     public void setPhone(String phone) {
+        //TODO werkt niet
+//        //remove spaces and check if contains numbers only
+//        if (!phone.replaceAll(" ","").matches("[0-9]")){
+//            throw new IllegalArgumentException("Second part must consist of numbers only");
+//        }
         this.phone = phone;
     }
 
@@ -120,14 +140,6 @@ public class User {
         this.locked = locked;
     }
 
-    public Boolean getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
     @Schema(example = "1000", description = "")
 
     public Long getDayLimit() {
@@ -135,6 +147,7 @@ public class User {
     }
 
     public void setDayLimit(Long dayLimit) {
+        if (dayLimit < 0) throw new IllegalArgumentException("Cannot be lower than zero");
         this.dayLimit = dayLimit;
     }
 
@@ -145,6 +158,7 @@ public class User {
     }
 
     public void setTransactionLimit(Long transactionLimit) {
+        if (transactionLimit < 0) throw new IllegalArgumentException("Cannot be lower than zero");
         this.transactionLimit = transactionLimit;
     }
 }
