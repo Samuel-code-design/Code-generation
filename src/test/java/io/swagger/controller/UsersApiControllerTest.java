@@ -17,6 +17,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
@@ -92,6 +93,7 @@ class UsersApiControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user1", password = "pwd", roles = "EMPLOYEE")
     void lockingLockedUserShouldReturnStatusOk() throws Exception {
         // url = "/users/{id}";
         given(service.lockUserById(1L)).willReturn(lockedUser);
@@ -100,6 +102,7 @@ class UsersApiControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user1", password = "pwd", roles = "EMPLOYEE")
     void lockingLockedUserShouldReturnJason() throws Exception {
         given(service.lockUserById(1L)).willReturn(lockedUser);
         this.mvc.perform(put("/users/1"))
@@ -108,6 +111,7 @@ class UsersApiControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user1", password = "pwd", roles = "EMPLOYEE")
     void lockingLockedUserShouldReturnJsonLockedMustBeTrue() throws Exception {
 //        String url = "/users/{id}";
         given(service.lockUserById(1L)).willReturn(lockedUser);
@@ -121,6 +125,7 @@ class UsersApiControllerTest {
 
 
     @Test
+    @WithMockUser(username = "user1", password = "pwd", roles = "EMPLOYEE")
     void updateUserShouldReturnStatusOk() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         u.setFirstName("test");
@@ -134,6 +139,7 @@ class UsersApiControllerTest {
 
 
     @Test
+    @WithMockUser(username = "user1", password = "pwd", roles = "EMPLOYEE")
     void createUserShouldReturn201Status() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         this.mvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON_VALUE)
