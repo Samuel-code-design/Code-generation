@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -37,16 +38,19 @@ public class UsersApiController implements UsersApi {
         this.service = service;
     }
 
+    @PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity<User> createUser(@Parameter(in = ParameterIn.DEFAULT, description = "New user body", required=true, schema=@Schema()) @Valid @RequestBody CreateUserDTO body) {
         User u = service.createUser(body);
         return ResponseEntity.status(HttpStatus.OK).body(u);
     }
 
+    @PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity<User> lockUserById(@Parameter(in = ParameterIn.PATH, description = "The userID", required=true, schema=@Schema()) @PathVariable("id") Long id) {
         User u = service.lockUserById(id);
         return ResponseEntity.status(HttpStatus.OK).body(u);
     }
 
+    @PreAuthorize("hasRole('EMPLOYEE')")
     public ResponseEntity<User> updateUser(@Parameter(in = ParameterIn.DEFAULT, description = "The new user information", required=true, schema=@Schema()) @Valid @RequestBody User body) {
         User u = service.updateUser(body);
         return ResponseEntity.status(HttpStatus.OK).body(u);
