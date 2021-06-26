@@ -39,7 +39,7 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
         List<Role> roles = new ArrayList<>();
         roles.add(Role.ROLE_EMPLOYEE);
         List<Role> role = new ArrayList<>();
-        roles.add(Role.ROLE_CUSTOMER);
+        role.add(Role.ROLE_CUSTOMER);
 
 
         User bank = new User("bank", passwordEncoder.encode("Wachtwoord!1"), "bank", "bank", "bak@gmail.com", "06 12345678",
