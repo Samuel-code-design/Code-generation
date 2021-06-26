@@ -70,8 +70,8 @@ public class TransactionService {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                     "Saving account can only send to accounts that are from you.");
 
-        //check als accountTo van type savings is en als accountFrom ook van gebruiker is
-        if(accountTo.getType() == AccountType.SAVING && !userAccounts.contains(accountFrom))
+        //check als accountTo van type savings is en als accountTo ook van gebruiker is
+        if(accountTo.getType() == AccountType.SAVING && !userAccounts.contains(accountTo))
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
                     "You can only send to your own saving accounts.");
 
