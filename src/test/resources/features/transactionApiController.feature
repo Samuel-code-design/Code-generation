@@ -4,6 +4,10 @@ Feature: Transactions
     When I retrieve all transactions
     Then I get http status 200
 
+  Scenario: Retrieve all transactions by date is status OK
+    When I retrieve all transactions by date
+    Then I get http status 200
+
   Scenario: Create new transaction is status OK
     When I post new transaction
     Then I get http status 200

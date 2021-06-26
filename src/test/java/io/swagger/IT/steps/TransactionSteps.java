@@ -5,9 +5,7 @@ import io.cucumber.java.en.When;
 import io.swagger.model.NewTransaction;
 import io.swagger.model.Transaction;
 import io.swagger.model.dto.LoginDTO;
-import io.swagger.service.TransactionService;
 import org.springframework.boot.configurationprocessor.json.JSONException;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.*;
 import org.junit.Assert;
 import org.springframework.web.client.HttpClientErrorException;
@@ -23,15 +21,15 @@ public class TransactionSteps {
     String singleUrl = "Transactions";
     RestTemplate template = new RestTemplate();
     ResponseEntity<String> responseEntity;
-    private String token = getToken();
+    private String token = getToken("JD0001", "Wachtwoord1#");
 
     public TransactionSteps() throws JSONException, URISyntaxException {
     }
 
-    public String getToken() throws URISyntaxException, JSONException {
+    public String getToken(String username, String password) throws URISyntaxException, JSONException {
         URI uri = new URI(baseUrl + "login");
 
-        LoginDTO login = new LoginDTO("JD0001", "Wachtwoord1#");
+        LoginDTO login = new LoginDTO(username, password);
         HttpEntity<LoginDTO> entity = new HttpEntity<>(login, headers);
 
         responseEntity = template.postForEntity(uri, entity, String.class);
@@ -69,6 +67,7 @@ public class TransactionSteps {
         try{
             responseEntity = template.postForEntity(uri, entity, String.class);
         }catch (HttpClientErrorException ex){
+            Assert.assertEquals(true, ex.getResponseBodyAsString().contains("Transaction amount exceeds transaction limit."));
             responseEntity = new ResponseEntity<String>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
@@ -95,6 +94,7 @@ public class TransactionSteps {
         try{
             responseEntity = template.postForEntity(uri, entity, String.class);
         }catch (HttpClientErrorException ex){
+            Assert.assertEquals(true, ex.getResponseBodyAsString().contains("User does not exists."));
             responseEntity = new ResponseEntity<String>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
@@ -108,6 +108,7 @@ public class TransactionSteps {
         try{
             responseEntity = template.postForEntity(uri, entity, String.class);
         }catch (HttpClientErrorException ex){
+            Assert.assertEquals(true, ex.getResponseBodyAsString().contains("The account which is sending the money does not exists."));
             responseEntity = new ResponseEntity<String>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
@@ -121,6 +122,7 @@ public class TransactionSteps {
         try{
             responseEntity = template.postForEntity(uri, entity, String.class);
         }catch (HttpClientErrorException ex){
+            Assert.assertEquals(true, ex.getResponseBodyAsString().contains("The account which is receiving the money does not exists."));
             responseEntity = new ResponseEntity<String>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
@@ -134,6 +136,7 @@ public class TransactionSteps {
         try{
             responseEntity = template.postForEntity(uri, entity, String.class);
         }catch (HttpClientErrorException ex){
+            Assert.assertEquals(true, ex.getResponseBodyAsString().contains("Saving account can only send to accounts that are from you."));
             responseEntity = new ResponseEntity<String>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
@@ -147,6 +150,7 @@ public class TransactionSteps {
         try{
             responseEntity = template.postForEntity(uri, entity, String.class);
         }catch (HttpClientErrorException ex){
+            Assert.assertEquals(true, ex.getResponseBodyAsString().contains("You can only send to your own saving accounts."));
             responseEntity = new ResponseEntity<String>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
@@ -160,6 +164,7 @@ public class TransactionSteps {
         try{
             responseEntity = template.postForEntity(uri, entity, String.class);
         }catch (HttpClientErrorException ex){
+            Assert.assertEquals(true, ex.getResponseBodyAsString().contains("Transaction will make the balance of accountFrom under the absolute limit."));
             responseEntity = new ResponseEntity<String>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
@@ -173,7 +178,18 @@ public class TransactionSteps {
         try{
             responseEntity = template.postForEntity(uri, entity, String.class);
         }catch (HttpClientErrorException ex){
+            Assert.assertEquals(true, ex.getResponseBodyAsString().contains("Transaction will go over the daily transaction limit."));
             responseEntity = new ResponseEntity<String>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
+    }
+
+    @When("I retrieve all transactions by date")
+    public void iRetrieveAllTransactionsByDate() throws URISyntaxException {
+        URI uri = new URI(baseUrl + "Customers/" + singleUrl);
+        headers.add("Authorization", token);
+        headers.add("Date", LocalDateTime.now().toString());
+        Transaction transaction = new Transaction();
+        HttpEntity<Transaction> entity = new HttpEntity(transaction, headers);
+        responseEntity = template.exchange(uri, HttpMethod.GET, entity, String.class);
     }
 }
