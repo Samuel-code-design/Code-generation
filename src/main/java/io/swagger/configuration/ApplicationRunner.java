@@ -38,6 +38,7 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
     public void run(ApplicationArguments args) throws Exception {
         List<Role> roles = new ArrayList<>();
         roles.add(Role.ROLE_EMPLOYEE);
+
         List<Role> role = new ArrayList<>();
         role.add(Role.ROLE_CUSTOMER);
 

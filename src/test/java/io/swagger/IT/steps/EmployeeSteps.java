@@ -1,7 +1,11 @@
 package io.swagger.IT.steps;
 
+import ch.qos.logback.core.encoder.EchoEncoder;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.swagger.model.Role;
+import io.swagger.model.User;
+import io.swagger.model.dto.CreateUserDTO;
 import io.swagger.model.dto.LoginDTO;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -9,14 +13,14 @@ import org.json.JSONObject;
 import org.junit.Assert;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 @SpringBootTest(properties = {"security.basic.enabled=false"})
 @AutoConfigureMockMvc(addFilters = false)
@@ -26,7 +30,7 @@ public class EmployeeSteps {
     private String baseUrl = "http://localhost:8080/api/";
     private RestTemplate template = new RestTemplate();
     private ResponseEntity<String> responseEntity;
-    private String token = getToken();
+    private String token;
 
     public EmployeeSteps() throws URISyntaxException {
 
@@ -43,18 +47,69 @@ public class EmployeeSteps {
     @When("i retrieve all users")
     public void iRetrieveAllUsers() throws URISyntaxException {
         URI uri = new URI(baseUrl + "users");
-        headers.add("Authorisation", "Bearer"+ token);
-        HttpEntity<String> entity = new HttpEntity(null, headers);
+        headers.add("Authorization", getToken());
+        HttpEntity<User> entity = new HttpEntity(null, headers);
         responseEntity = template.exchange(uri, HttpMethod.GET, entity, String.class);
     }
 
     @When("i retrieve a user with id {int}")
     public void iRetrieveAUserWithId(int id) throws URISyntaxException {
         URI uri = new URI(baseUrl + "users/" + id);
-        headers.add("Authorisation", token);
-        HttpEntity<String> entity = new HttpEntity(null, headers);
-//        responseEntity = template.getForEntity(uri, String.class);
+        headers.add("Authorization", getToken());
+        HttpEntity<User> entity = new HttpEntity(null, headers);
         responseEntity = template.exchange(uri, HttpMethod.GET, entity, String.class);
+    }
+
+
+    @When("i create a user")
+    public void iCreateAUser() throws URISyntaxException {
+        URI uri = new URI(baseUrl + "users/");
+        headers.add("Authorization", getToken());
+
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.ROLE_EMPLOYEE);
+
+        CreateUserDTO u = new CreateUserDTO("JD0002","Wachtwoord1", "Samuel", "brouwer",
+                "samuelpikouwe@gmail.com", "06 12345670", 100L, 1000L, roles);
+
+        HttpEntity<User> entity = new HttpEntity(u, headers);
+        responseEntity = template.postForEntity(uri, entity, String.class);
+    }
+
+    @When("i create a user with existing username")
+    public void iCreateAUserWithExistingUsername() throws URISyntaxException {
+        URI uri = new URI(baseUrl + "users/");
+        headers.add("Authorization", getToken());
+
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.ROLE_EMPLOYEE);
+        CreateUserDTO u = new CreateUserDTO("JD0001","Wachtwoord1", "Samuel", "brouwer",
+                "samuelpikouwe@gmail.com", "06 12345670", 100L, 1000L, roles);
+        HttpEntity<User> entity = new HttpEntity(u, headers);
+
+        try {
+            responseEntity = template.postForEntity(uri, entity, String.class);
+        }
+        catch (HttpClientErrorException e){
+            responseEntity = new ResponseEntity<String>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    @When("i lock the user with id {int}")
+    public void iLockTheUserWithId(int id) throws URISyntaxException {
+        URI uri = new URI(baseUrl + "users/" + id) ;
+        headers.add("Authorization", getToken());
+
+        HttpEntity<User> entity = new HttpEntity(null, headers);
+
+        try {
+            responseEntity = template.exchange(uri, HttpMethod.PUT, entity, String.class);
+        }
+        catch (HttpClientErrorException e){
+            responseEntity = new ResponseEntity<String>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+
+
     }
 
     @Then("i get a list of {int} users")
@@ -62,7 +117,7 @@ public class EmployeeSteps {
         String response = responseEntity.getBody();
         JSONArray array = new JSONArray(response);
         int actualSize = array.length();
-        Assert.assertEquals(actualSize, expectedSize);
+        Assert.assertEquals(expectedSize, actualSize);
     }
 
     @Then("is the status of the request {int}")
@@ -76,6 +131,9 @@ public class EmployeeSteps {
         String response = responseEntity.getBody();
         JSONObject object = new JSONObject(response);
         String actualUsername = object.getString("username");
-        Assert.assertEquals(actualUsername, username);
+        Assert.assertEquals(username, actualUsername);
     }
+
+
+
 }
