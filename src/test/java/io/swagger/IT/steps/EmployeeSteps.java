@@ -108,8 +108,63 @@ public class EmployeeSteps {
         catch (HttpClientErrorException e){
             responseEntity = new ResponseEntity<String>(HttpStatus.UNPROCESSABLE_ENTITY);
         }
+    }
+    @When("i lock user {int} that is already locked")
+    public void iLockUserThatIsAlreadyLocked(int id) throws URISyntaxException {
+        URI uri = new URI(baseUrl + "users/" + id) ;
+        headers.add("Authorization", getToken());
+
+        iLockTheUserWithId(id);
+
+        HttpEntity<User> entity = new HttpEntity(null, headers);
+
+        try {
+            responseEntity = template.exchange(uri, HttpMethod.PUT, entity, String.class);
+        }
+        catch (HttpClientErrorException e){
+            responseEntity = new ResponseEntity<String>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
 
 
+    @When("i update a user")
+    public void iUpdateAUser() throws URISyntaxException {
+        URI uri = new URI(baseUrl + "users/");
+        headers.add("Authorization", getToken());
+
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.ROLE_EMPLOYEE);
+        User u = new User(2L, "JD0001", "Wachtwoord1#", "plaayer", "brouwer", "samuel11hoi@gmail.com", "06 12345678",
+                roles, false, 1000L, 1000L);
+
+        HttpEntity<User> entity = new HttpEntity(u, headers);
+
+        try {
+            responseEntity = template.exchange(uri, HttpMethod.PUT, entity, String.class);
+        }
+        catch (HttpClientErrorException e){
+            responseEntity = new ResponseEntity<String>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    @When("i update a user with existing username")
+    public void iUpdateAUserWithExistingUsername() throws URISyntaxException {
+        URI uri = new URI(baseUrl + "users/");
+        headers.add("Authorization", getToken());
+
+        List<Role> roles = new ArrayList<>();
+        roles.add(Role.ROLE_EMPLOYEE);
+        User u = new User(2L, "bank", "Wachtwoord1#", "plaayer", "brouwer", "samuel11hoi@gmail.com", "06 12345678",
+                roles, false, 1000L, 1000L);
+
+        HttpEntity<User> entity = new HttpEntity(u, headers);
+
+        try {
+            responseEntity = template.exchange(uri, HttpMethod.PUT, entity, String.class);
+        }
+        catch (HttpClientErrorException e){
+            responseEntity = new ResponseEntity<String>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
     }
 
     @Then("i get a list of {int} users")
