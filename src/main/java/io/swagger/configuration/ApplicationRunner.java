@@ -52,7 +52,11 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
 
 
         Account account = new Account("NL01INHO0000000001", AccountType.CURRENT, 100000.00, 100.00, false, bank);
+        Account account2 = new Account("NL01INHO0000000002", AccountType.CURRENT, 1000000.00, 100.00, false, u);
+        Account account3 = new Account("NL01INHO0000000003", AccountType.CURRENT, 1.00, 100.00, false, u);
         accountRepository.save(account);
+        accountRepository.save(account2);
+        accountRepository.save(account3);
 
         User customer = new User("TestCustomer", "Wachtwoord1#", "Serah", "Visser", "serah@gmail.com", "06 12345678",
                 role, false, 1000L, 1000L);
@@ -62,6 +66,8 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
 
         authenticationService.signup(customer);
         authenticationService.signup(customer2);
+        Account account4 = new Account("NL01INHO0000000004", AccountType.SAVING, 1000000.00, 100.00, false, customer);
+        accountRepository.save(account4);
     }
 
 
