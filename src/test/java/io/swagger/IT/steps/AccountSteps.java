@@ -54,7 +54,7 @@ public class AccountSteps {
     }
 
     @When("I retrieve account with iban {string}")
-    public void IGetOneAccountWithIban(String iban)throws URISyntaxException {
+    public void iGetOneAccountWithIban(String iban)throws URISyntaxException {
         URI uri = new URI(singleUrl + iban);
         headers.add("Authorization", token);
         Account account = new Account();
@@ -85,7 +85,7 @@ public class AccountSteps {
     }
 
     @When("I get accounts for userId {long}")
-    public void IGetAccountsForUserId(Long userId)throws URISyntaxException {
+    public void iGetAccountsForUserId(Long userId)throws URISyntaxException {
         URI uri = new URI(baseUrl + "/" + userId);
         headers.add("Authorization", token);
         HttpEntity<String> entity = new HttpEntity(null, headers);
