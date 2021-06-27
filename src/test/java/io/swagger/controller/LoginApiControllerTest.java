@@ -41,7 +41,7 @@ class LoginApiControllerTest {
     }
 
     @Test
-    void wrongLoginUserShouldReturnError() throws Exception {
+    void wrongLoginUserShouldReturnUnprocessableEntity() throws Exception {
         LoginDTO wrongLogin = new LoginDTO("test", "Wachtwoord1#");
         ObjectMapper mapper = new ObjectMapper();
         this.mvc.perform(post("/login")
@@ -49,5 +49,15 @@ class LoginApiControllerTest {
                 .content(mapper.writeValueAsString(wrongLogin)))
                 .andExpect(status().isUnprocessableEntity());
     }
+    @Test
+    void lockedLoginUserShouldReturnUnprocessableEntity() throws Exception {
+        LoginDTO lockedLogin = new LoginDTO("TestCustomer2", "Wachtwoord1#");
+        ObjectMapper mapper = new ObjectMapper();
+        this.mvc.perform(post("/login")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(mapper.writeValueAsString(lockedLogin)))
+                .andExpect(status().isUnprocessableEntity());
+    }
+
 
 }

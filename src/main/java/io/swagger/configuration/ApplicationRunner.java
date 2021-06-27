@@ -62,7 +62,7 @@ public class ApplicationRunner implements org.springframework.boot.ApplicationRu
                 role, false, 1000L, 1000L);
 
         User customer2 = new User("TestCustomer2", "Wachtwoord1#", "Emma", "Haan", "emma@gmail.com", "06 12345678",
-                role, false, 1000L, 1000L);
+                role, true, 1000L, 1000L);
 
         authenticationService.signup(customer);
         authenticationService.signup(customer2);
