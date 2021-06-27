@@ -55,29 +55,13 @@ class AccountsApiControllerTest {
     private AccountService accountService;
 
     @MockBean
-    private AuthenticationService authService;
-
-    @MockBean
     private LoginDTO loginDTO;
 
     private User u;
 
-
     @BeforeEach
     public void setup() {
         mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        List<Role> roles = new ArrayList<>();
-        roles.add(Role.ROLE_EMPLOYEE);
-
-        u = new User("JulieMeij", "1234567", "Julie", "van der Meij", "juliemeij@gmail.com", "06 12345678",
-                roles, false,  1000L, 1000L);
-        authService.signup(u);
-        authService.login("JulieMeij", "1234567");
-
-        Account account = new Account("NL02INHO0987654321", AccountType.CURRENT, 0.0, 0.0, false, u);
-
-        loginDTO = new LoginDTO("JD0001", "Wachtwoord1#");
-
     }
 
     @Test
@@ -104,7 +88,7 @@ class AccountsApiControllerTest {
     @Test
     @WithMockUser(username = "user1", password = "pwd", roles = "EMPLOYEE")
     void findAccountByIbanShouldReturnOK() throws Exception {
-        this.mvc.perform(get("/account/NL02INHO0987654321"))
+        this.mvc.perform(get("/account/NL02INHO0123456789"))
                 .andExpect(status().isOk());
     }
 
@@ -118,7 +102,7 @@ class AccountsApiControllerTest {
     @Test
     @WithMockUser(username = "user1", password = "pwd", roles = "EMPLOYEE")
     void lockAccountShouldReturnOK() throws Exception{
-        this.mvc.perform(put("/accounts/NL02INHO0987654321"))
+        this.mvc.perform(put("/accounts/NL02INHO0123456789"))
                 .andExpect(status().isOk());
     }
 
@@ -126,7 +110,7 @@ class AccountsApiControllerTest {
     @WithMockUser(username = "user1", password = "pwd", roles = "EMPLOYEE")
     void updateAccountShouldReturnOK() throws Exception{
         ObjectMapper mapper = new ObjectMapper();
-        AccountUpdateDTO acc = new AccountUpdateDTO("NL02INHO0987654321", AccountType.SAVING, 0.0, false, u.getId());
+        AccountUpdateDTO acc = new AccountUpdateDTO("NL02INHO0123456789", AccountType.SAVING, 0.0, false, 3L);
         this.mvc
                 .perform(
                         put("/accounts")
