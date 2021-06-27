@@ -17,7 +17,7 @@ Feature: Accounts
     Then (Account) I get http status 200
 
   Scenario: Getting a list of accounts
-    When I get accounts for userId 3
+    When I get accounts for userId 4
     Then I get a list of 3 accounts
 
   Scenario: Locking an account
