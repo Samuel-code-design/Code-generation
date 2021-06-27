@@ -13,6 +13,9 @@ public class LoginDTO {
         this.password = password;
     }
 
+    public LoginDTO() {
+    }
+
     @Schema(example = "JD0001", required = true, description = "")
     @NotNull
     public String getUsername() {
