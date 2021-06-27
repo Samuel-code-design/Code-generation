@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.Assert;
 import org.springframework.http.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -57,7 +58,12 @@ public class AccountSteps {
         headers.add("Authorization", token);
         Account account = new Account();
         HttpEntity<Account> entity = new HttpEntity<>(null, headers);
-        responseEntity = template.exchange(uri, HttpMethod.GET, entity, String.class);
+        try{
+            responseEntity = template.exchange(uri, HttpMethod.GET, entity, String.class);
+        }catch (HttpClientErrorException ex){
+            Assert.assertEquals(true, ex.getResponseBodyAsString().contains("No account found for this iban"));
+            responseEntity = new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @When("I post an account")
@@ -79,7 +85,12 @@ public class AccountSteps {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", token);
         HttpEntity<String> entity = new HttpEntity<>(mapper.writeValueAsString(acc), headers);
-        responseEntity = template.exchange(uri, HttpMethod.PUT, entity, String.class);
+        try{
+            responseEntity = template.exchange(uri, HttpMethod.PUT, entity, String.class);
+        }catch (HttpClientErrorException ex){
+            Assert.assertEquals(true, ex.getResponseBodyAsString().contains("IBAN does not exist"));
+            responseEntity = new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @When("I get accounts for userId {long}")
@@ -87,7 +98,12 @@ public class AccountSteps {
         URI uri = new URI(baseUrl + "/" + userId);
         headers.add("Authorization", token);
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        responseEntity = template.exchange(uri, HttpMethod.GET, entity, String.class);
+        try{
+            responseEntity = template.exchange(uri, HttpMethod.GET, entity, String.class);
+        }catch (HttpClientErrorException ex){
+            Assert.assertEquals(true, ex.getResponseBodyAsString().contains("No user with this id"));
+            responseEntity = new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+        }
     }
     @When("I lock an account with iban {string}")
     public void iLockAnAccountWithIban(String iban) throws URISyntaxException {
@@ -95,7 +111,12 @@ public class AccountSteps {
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", token);
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        responseEntity = template.exchange(uri, HttpMethod.PUT, entity, String.class);
+        try{
+            responseEntity = template.exchange(uri, HttpMethod.PUT, entity, String.class);
+        }catch (HttpClientErrorException ex){
+            Assert.assertEquals(true, ex.getResponseBodyAsString().contains("No account found for this Iban"));
+            responseEntity = new ResponseEntity<String>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @Then("I get a list of {int} accounts")
