@@ -34,9 +34,7 @@ public class AccountSteps {
     public String getToken() throws URISyntaxException, JSONException {
         URI uri = new URI("http://localhost:8080/api/login");
 
-        LoginDTO login = new LoginDTO();
-        login.setPassword("Wachtwoord1#");
-        login.setUsername("JD0001");
+        LoginDTO login = new LoginDTO("JD0001", "Wachtwoord1#");
 
         HttpEntity<LoginDTO> entity = new HttpEntity<>(login, headers);
 
@@ -49,7 +47,7 @@ public class AccountSteps {
         URI uri = new URI(baseUrl);
         headers.add("Authorization", token);
         Account account = new Account();
-        HttpEntity<Account> entity = new HttpEntity(account, headers);
+        HttpEntity<Account> entity = new HttpEntity<>(account, headers);
         responseEntity = template.exchange(uri, HttpMethod.GET, entity, String.class);
     }
 
@@ -58,7 +56,7 @@ public class AccountSteps {
         URI uri = new URI(singleUrl + iban);
         headers.add("Authorization", token);
         Account account = new Account();
-        HttpEntity<Account> entity = new HttpEntity(null, headers);
+        HttpEntity<Account> entity = new HttpEntity<>(null, headers);
         responseEntity = template.exchange(uri, HttpMethod.GET, entity, String.class);
     }
 
@@ -73,10 +71,10 @@ public class AccountSteps {
         responseEntity = template.postForEntity(uri, entity, String.class);
     }
 
-    @When("I update an account")
-    public void iUpdateAnAccount()throws JsonProcessingException, URISyntaxException {
+    @When("I update an account with iban {string}")
+    public void iUpdateAnAccount(String iban)throws JsonProcessingException, URISyntaxException {
         ObjectMapper mapper = new ObjectMapper();
-        AccountUpdateDTO acc = new AccountUpdateDTO("NL02INHO0123456789", AccountType.SAVING, 20.0, false, 3L);
+        AccountUpdateDTO acc = new AccountUpdateDTO(iban, AccountType.SAVING, 20.0, false, 3L);
         URI uri = new URI(baseUrl);
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("Authorization", token);
@@ -88,7 +86,7 @@ public class AccountSteps {
     public void iGetAccountsForUserId(Long userId)throws URISyntaxException {
         URI uri = new URI(baseUrl + "/" + userId);
         headers.add("Authorization", token);
-        HttpEntity<String> entity = new HttpEntity(null, headers);
+        HttpEntity<String> entity = new HttpEntity<>(null, headers);
         responseEntity = template.exchange(uri, HttpMethod.GET, entity, String.class);
     }
     @When("I lock an account with iban {string}")
@@ -99,7 +97,6 @@ public class AccountSteps {
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
         responseEntity = template.exchange(uri, HttpMethod.PUT, entity, String.class);
     }
-
 
     @Then("I get a list of {int} accounts")
     public void iGetAListOfAccounts(int size) throws JSONException {
@@ -113,6 +110,5 @@ public class AccountSteps {
         int response = responseEntity.getStatusCodeValue();
         Assert.assertEquals(expected, response);
     }
-
 
 }
